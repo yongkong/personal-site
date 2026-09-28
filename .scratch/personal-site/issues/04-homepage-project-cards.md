@@ -10,3 +10,4 @@
 - [ ] Project Card 数据来自结构化配置，新增条目不需改站点代码
 - [ ] 双语完整，无混语
 - [ ] 构建后断言：首页包含 Contact CTA 链接与 Project Card 的 GitHub 直链
+- [ ] shadcn/ui 初始化完成（components.json + 首批组件自 04 起引入，工单 01 决议移交）

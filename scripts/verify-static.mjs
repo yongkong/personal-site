@@ -26,13 +26,13 @@ if (en && zh) {
   check('zh page declares <html lang="zh">', zh.includes('<html lang="zh"'));
   check("en home shows en positioning line", en.includes("AI-native workflow"));
   check("zh home shows zh positioning line", zh.includes("AI 原生工作流"));
-  check("en home links to /zh (language switch)", en.includes('href="/zh"'));
-  check("zh home links to / (English)", zh.includes('href="/"'));
+  check("en home links to /zh (language switch)", /href="\/zh\/?"/.test(en));
+  check("zh home links to / (English)", /href="\/"/.test(zh));
   check("en home has no zh copy mixed in", !en.includes("AI 原生工作流"));
   check("zh home has no en copy mixed in", !zh.includes("AI-native workflow"));
   check("theme toggle rendered (en)", en.includes("data-theme-toggle"));
   check("theme toggle rendered (zh)", zh.includes("data-theme-toggle"));
-  check("theme init script in head (pre-hydration, no flash)", en.includes("theme-init"));
+  check("theme init script inline pre-paint (no flash)", en.includes("theme-init"));
 }
 
 console.log(failures ? `\n${failures} check(s) failed` : "\nAll checks passed");
