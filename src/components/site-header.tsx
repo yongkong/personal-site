@@ -27,6 +27,18 @@ export function SiteHeader({ lang }: { lang: Lang }) {
             {dict.blogLabel}
           </Link>
           <Link
+            href={dict.aboutHref}
+            className="rounded-md px-3 py-1.5 text-sm text-muted transition-colors hover:text-foreground"
+          >
+            {dict.aboutLabel}
+          </Link>
+          <Link
+            href={dict.contactHref}
+            className="rounded-md border border-border px-3 py-1.5 text-sm transition-colors hover:text-foreground"
+          >
+            {dict.contactLabel}
+          </Link>
+          <Link
             href={dict.langSwitchHref}
             className="rounded-md px-3 py-1.5 text-sm text-muted transition-colors hover:text-foreground"
           >

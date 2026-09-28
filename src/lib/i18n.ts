@@ -25,6 +25,20 @@ export type Dictionary = {
   caseStudiesBackLabel: string;
   draftBanner: string;
   draftChip: string;
+  aboutLabel: string;
+  aboutHref: string;
+  contactLabel: string;
+  contactHref: string;
+  aboutTitle: string;
+  aboutBio: string;
+  aboutWorkingStyle: string;
+  contactTitle: string;
+  contactSubtitle: string;
+  emailLabel: string;
+  bookCallLabel: string;
+  linkedinLabel: string;
+  wechatLabel: string;
+  wechatQrPlaceholder: string;
 };
 
 const en: Dictionary = {
@@ -56,6 +70,21 @@ const en: Dictionary = {
   caseStudiesBackLabel: "All case studies",
   draftBanner: "Draft — placeholder content. The full write-up is in progress.",
   draftChip: "Draft",
+  aboutLabel: "About",
+  aboutHref: "/about/",
+  contactLabel: "Contact",
+  contactHref: "/contact/",
+  aboutTitle: "About",
+  aboutBio:
+    "[PLACEHOLDER — full narrative arrives with the launch content pass.] In short: 20+ years of full-stack engineering, 12 of them owning an enterprise case-management platform for a US client — now delivering through an AI-native workflow.",
+  aboutWorkingStyle: "Remote, async-friendly, UTC+8 — comfortable overlapping US and European hours.",
+  contactTitle: "Contact",
+  contactSubtitle: "The fastest way to start a conversation.",
+  emailLabel: "Email",
+  bookCallLabel: "Book a call (Cal.com)",
+  linkedinLabel: "LinkedIn",
+  wechatLabel: "WeChat",
+  wechatQrPlaceholder: "WeChat QR — image placeholder",
 };
 
 const zh: Dictionary = {
@@ -84,6 +113,21 @@ const zh: Dictionary = {
   caseStudiesBackLabel: "全部案例研究",
   draftBanner: "草稿——当前为占位内容，完整撰写进行中。",
   draftChip: "草稿",
+  aboutLabel: "关于",
+  aboutHref: "/zh/about/",
+  contactLabel: "联系",
+  contactHref: "/zh/contact/",
+  aboutTitle: "关于",
+  aboutBio:
+    "【占位——完整履历随上线内容批次补充。】简版：20 余年全栈工程经验，其中 12 年独立承担美国客户的企业级案件管理平台——如今以 AI 原生工作流交付。",
+  aboutWorkingStyle: "支持远程与异步协作，UTC+8，可与美国/欧洲时区重叠工作。",
+  contactTitle: "联系",
+  contactSubtitle: "最快开始交流的方式。",
+  emailLabel: "邮箱",
+  bookCallLabel: "预约通话（Cal.com）",
+  linkedinLabel: "领英",
+  wechatLabel: "微信",
+  wechatQrPlaceholder: "微信二维码——图片占位",
 };
 
 export function getDictionary(lang: Lang): Dictionary {

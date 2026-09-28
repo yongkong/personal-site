@@ -136,5 +136,67 @@ if (enBlog && zhBlog && enPost && zhPost) {
   }
 }
 
+// --- About + Contact (ticket 05) ---
+const aboutPages = { en: read("about/index.html"), zh: read("zh/about/index.html") };
+const contactPages = { en: read("contact/index.html"), zh: read("zh/contact/index.html") };
+
+check("en about route exists", !!aboutPages.en);
+check("zh about route exists", !!aboutPages.zh);
+check("en contact route exists", !!contactPages.en);
+check("zh contact route exists", !!contactPages.zh);
+
+for (const lang of ["en", "zh"]) {
+  const about = aboutPages[lang];
+  if (about) {
+    check(`${lang} about states timezone UTC+8`, about.includes("UTC+8"));
+    check(`${lang} about mentions async collaboration`, lang === "en" ? about.includes("async") : about.includes("异步"));
+  }
+  const contact = contactPages[lang];
+  if (contact) {
+    check(`${lang} contact renders email (mailto placeholder)`, contact.includes("mailto:"));
+    check(`${lang} contact renders booking link entry`, contact.includes("cal.com") || contact.includes("CAL.COM"));
+    check(`${lang} contact links GitHub`, contact.includes("github.com/yongkong"));
+    check(`${lang} contact renders LinkedIn entry (placeholder ok)`, contact.includes("LinkedIn") || contact.includes("领英"));
+  }
+}
+
+// Contact entries must point at the configured URLs (href-level, derived from
+// site-config so ticket 09's real values keep these checks meaningful).
+const siteConfigSrc = readFileSync("src/lib/site-config.ts", "utf8");
+const configValue = (key) => (siteConfigSrc.match(new RegExp(`${key}:\\s*"([^"]+)"`)) || [])[1];
+const cfgEmail = configValue("email");
+const cfgBook = configValue("bookCallUrl");
+const cfgLinkedin = configValue("linkedinUrl");
+
+for (const lang of ["en", "zh"]) {
+  const contact = contactPages[lang];
+  if (contact && cfgEmail) {
+    check(`${lang} contact email href matches site config`, contact.includes(`href="mailto:${cfgEmail}"`));
+  }
+  if (contact && cfgBook) {
+    check(`${lang} contact booking href matches site config`, contact.includes(`href="${cfgBook}"`));
+  }
+  if (contact && cfgLinkedin) {
+    check(`${lang} contact LinkedIn href matches site config`, contact.includes(`href="${cfgLinkedin}"`));
+  }
+}
+
+// WeChat QR slot lives in the zh footer only (spec: language-differentiated
+// contact surface) — asserted per rendered page, both directions.
+const renderedPages = {
+  en: { home: en, blog: enBlog, "case studies": caseList.en, about: aboutPages.en, contact: contactPages.en },
+  zh: { home: zh, blog: zhBlog, "case studies": caseList.zh, about: aboutPages.zh, contact: contactPages.zh },
+};
+for (const [lang, pages] of Object.entries(renderedPages)) {
+  for (const [pageName, html] of Object.entries(pages)) {
+    if (!html) continue;
+    if (lang === "en") {
+      check(`en ${pageName} page has no WeChat QR slot`, !html.includes("data-wechat-qr"));
+    } else {
+      check(`zh ${pageName} page has WeChat QR slot`, html.includes("data-wechat-qr"));
+    }
+  }
+}
+
 console.log(failures ? `\n${failures} check(s) failed` : "\nAll checks passed");
 process.exit(failures ? 1 : 0);
