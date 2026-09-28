@@ -12,6 +12,12 @@ export type Dictionary = {
   themeToggleLabel: string;
   footerNote: string;
   githubLabel: string;
+  blogLabel: string;
+  blogHref: string;
+  blogListTitle: string;
+  blogListSubtitle: string;
+  blogBackLabel: string;
+  postedOnLabel: string;
 };
 
 const en: Dictionary = {
@@ -28,6 +34,13 @@ const en: Dictionary = {
   themeToggleLabel: "Theme",
   footerNote: "Built with Next.js, statically exported.",
   githubLabel: "GitHub",
+  blogLabel: "Blog",
+  blogHref: "/blog/",
+  blogListTitle: "Blog",
+  blogListSubtitle:
+    "Notes on engineering practice, AI-native workflow, and long-term system maintenance.",
+  blogBackLabel: "All posts",
+  postedOnLabel: "Posted on",
 };
 
 const zh: Dictionary = {
@@ -43,6 +56,12 @@ const zh: Dictionary = {
   themeToggleLabel: "主题",
   footerNote: "基于 Next.js 构建，静态导出。",
   githubLabel: "GitHub",
+  blogLabel: "心得",
+  blogHref: "/zh/blog/",
+  blogListTitle: "开发心得",
+  blogListSubtitle: "关于工程实践、AI 原生工作流与长期系统维护的记录。",
+  blogBackLabel: "全部心得",
+  postedOnLabel: "发布于",
 };
 
 export function getDictionary(lang: Lang): Dictionary {

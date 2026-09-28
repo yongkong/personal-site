@@ -1,5 +1,7 @@
 @import "tailwindcss";
 
+@plugin "@tailwindcss/typography";
+
 /* Class-based dark mode: the init script applies .dark from localStorage or
    system preference before paint; the media query alone would fight the
    manual toggle. */
