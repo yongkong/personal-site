@@ -1,5 +1,5 @@
-import { HomeHero } from "@/components/home-hero";
+import { Home } from "@/components/home";
 
 export default function HomePage() {
-  return <HomeHero lang="zh" />;
+  return <Home lang="zh" />;
 }

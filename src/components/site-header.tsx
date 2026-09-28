@@ -16,19 +16,19 @@ export function SiteHeader({ lang }: { lang: Lang }) {
         <div className="flex items-center gap-2">
           <Link
             href={dict.caseStudiesHref}
-            className="rounded-md px-3 py-1.5 text-sm text-muted transition-colors hover:text-foreground"
+            className="rounded-md px-3 py-1.5 text-sm text-muted-foreground transition-colors hover:text-foreground"
           >
             {dict.caseStudiesLabel}
           </Link>
           <Link
             href={dict.blogHref}
-            className="rounded-md px-3 py-1.5 text-sm text-muted transition-colors hover:text-foreground"
+            className="rounded-md px-3 py-1.5 text-sm text-muted-foreground transition-colors hover:text-foreground"
           >
             {dict.blogLabel}
           </Link>
           <Link
             href={dict.aboutHref}
-            className="rounded-md px-3 py-1.5 text-sm text-muted transition-colors hover:text-foreground"
+            className="rounded-md px-3 py-1.5 text-sm text-muted-foreground transition-colors hover:text-foreground"
           >
             {dict.aboutLabel}
           </Link>
@@ -40,7 +40,7 @@ export function SiteHeader({ lang }: { lang: Lang }) {
           </Link>
           <Link
             href={dict.langSwitchHref}
-            className="rounded-md px-3 py-1.5 text-sm text-muted transition-colors hover:text-foreground"
+            className="rounded-md px-3 py-1.5 text-sm text-muted-foreground transition-colors hover:text-foreground"
           >
             {dict.langSwitchLabel}
           </Link>

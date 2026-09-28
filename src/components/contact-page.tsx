@@ -1,3 +1,4 @@
+import { PageShell } from "@/components/page-shell";
 import { getDictionary, type Lang } from "@/lib/i18n";
 import { siteConfig } from "@/lib/site-config";
 
@@ -12,14 +13,11 @@ export function ContactPage({ lang }: { lang: Lang }) {
   ];
 
   return (
-    <section className="mx-auto w-full max-w-4xl px-4 py-16">
-      <h1 className="text-3xl font-semibold tracking-tight">{dict.contactTitle}</h1>
-      <p className="mt-2 text-muted">{dict.contactSubtitle}</p>
-
+    <PageShell title={dict.contactTitle} subtitle={dict.contactSubtitle}>
       <ul className="mt-10 flex flex-col gap-6">
         {entries.map((entry) => (
           <li key={entry.label} className="border-b border-border pb-6 last:border-0">
-            <p className="text-sm text-muted">{entry.label}</p>
+            <p className="text-sm text-muted-foreground">{entry.label}</p>
             <a
               href={entry.href}
               target={entry.href.startsWith("mailto:") ? undefined : "_blank"}
@@ -31,6 +29,6 @@ export function ContactPage({ lang }: { lang: Lang }) {
           </li>
         ))}
       </ul>
-    </section>
+    </PageShell>
   );
 }

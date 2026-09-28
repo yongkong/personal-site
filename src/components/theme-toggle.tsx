@@ -21,7 +21,7 @@ export function ThemeToggle({ label }: { label: string }) {
       data-theme-toggle
       aria-label={label}
       onClick={toggle}
-      className="rounded-md border border-border px-3 py-1.5 text-sm text-muted transition-colors hover:text-foreground"
+      className="rounded-md border border-border px-3 py-1.5 text-sm text-muted-foreground transition-colors hover:text-foreground"
     >
       {label}
     </button>

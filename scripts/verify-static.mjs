@@ -24,11 +24,35 @@ const caseStudyMeta = (lang) =>
           return {
             slug: f.replace(/\.mdx$/, ""),
             title: (raw.match(/^title:\s*"?(.+?)"?\s*$/m) || [])[1],
+            date: (raw.match(/^date:\s*(.+)$/m) || [])[1]?.trim() ?? "",
             draft: /^draft:\s*true\s*$/m.test(raw),
+            featured: /^featured:\s*true\s*$/m.test(raw),
           };
         })
         .filter((s) => s.title)
+        .sort((a, b) => b.date.localeCompare(a.date))
     : [];
+
+// Blog post metas sorted by date desc, mirroring the site's own ordering.
+const blogMeta = (lang) =>
+  existsSync(contentDir(lang))
+    ? readdirSync(contentDir(lang))
+        .filter((f) => f.endsWith(".mdx"))
+        .map((f) => {
+          const raw = readFileSync(join(contentDir(lang), f), "utf8");
+          return {
+            title: (raw.match(/^title:\s*"?(.+?)"?\s*$/m) || [])[1],
+            date: (raw.match(/^date:\s*(.+)$/m) || [])[1]?.trim() ?? "",
+          };
+        })
+        .filter((p) => p.title)
+        .sort((a, b) => b.date.localeCompare(a.date))
+    : [];
+
+// Project card URLs parsed from the projects module (single source of truth).
+const projectUrls = [
+  ...readFileSync("src/lib/projects.ts", "utf8").matchAll(/url:\s*"(https:\/\/github\.com\/[^"]+)"/g),
+].map((m) => m[1]);
 
 const en = read("index.html");
 const zh = read("zh/index.html");
@@ -195,6 +219,29 @@ for (const [lang, pages] of Object.entries(renderedPages)) {
     } else {
       check(`zh ${pageName} page has WeChat QR slot`, html.includes("data-wechat-qr"));
     }
+  }
+}
+
+// --- Homepage assembly (ticket 04) ---
+// Featured/latest expectations mirror the site's own selection logic
+// (featured flag first, fallback to newest; posts sorted by date desc),
+// derived from the content dirs; project URLs come from projects.ts.
+for (const lang of ["en", "zh"]) {
+  const home = lang === "en" ? en : zh;
+  if (!home) continue;
+  check(`${lang} home has Contact CTA link`, home.includes(lang === "en" ? 'href="/contact/"' : 'href="/zh/contact/"'));
+  const studies = caseStudyMeta(lang);
+  const flagged = studies.filter((s) => s.featured);
+  const featured = (flagged.length > 0 ? flagged : studies).slice(0, 2);
+  if (featured[0]) {
+    check(`${lang} home features the top curated case study`, home.includes(featured[0].title));
+  }
+  const latestPost = blogMeta(lang)[0];
+  if (latestPost) {
+    check(`${lang} home lists the latest blog post`, home.includes(latestPost.title));
+  }
+  for (const url of projectUrls) {
+    check(`${lang} home links project card: ${url.split("/").pop()}`, home.includes(url));
   }
 }
 

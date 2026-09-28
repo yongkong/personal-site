@@ -7,7 +7,7 @@ export function SiteFooter({ lang }: { lang: Lang }) {
 
   return (
     <footer className="border-t border-border">
-      <div className="mx-auto flex w-full max-w-4xl flex-col gap-4 px-4 py-6 text-sm text-muted sm:flex-row sm:items-center sm:justify-between">
+      <div className="mx-auto flex w-full max-w-4xl flex-col gap-4 px-4 py-6 text-sm text-muted-foreground sm:flex-row sm:items-center sm:justify-between">
         <span>
           © {year} {siteConfig.authorRealName} ({siteConfig.name}). {dict.footerNote}
         </span>

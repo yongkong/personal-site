@@ -11,6 +11,7 @@ export type ContentItem = {
   description: string;
   date: string; // ISO date (YYYY-MM-DD)
   draft: boolean; // true while placeholder content awaits its real write-up
+  featured: boolean; // curated onto the homepage's Featured section
   body: string; // MDX source
 };
 
@@ -51,6 +52,7 @@ function loadCollection(lang: Lang, dirName: string): ContentItem[] {
         description: String(data.description ?? ""),
         date,
         draft: data.draft === true,
+        featured: data.featured === true,
         body: content.trim(),
       };
     })

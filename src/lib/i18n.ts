@@ -39,6 +39,11 @@ export type Dictionary = {
   linkedinLabel: string;
   wechatLabel: string;
   wechatQrPlaceholder: string;
+  featuredLabel: string;
+  latestPostsLabel: string;
+  projectsLabel: string;
+  ctaLabel: string;
+  viewAllLabel: string;
 };
 
 const en: Dictionary = {
@@ -85,6 +90,11 @@ const en: Dictionary = {
   linkedinLabel: "LinkedIn",
   wechatLabel: "WeChat",
   wechatQrPlaceholder: "WeChat QR — image placeholder",
+  featuredLabel: "Featured work",
+  latestPostsLabel: "Latest posts",
+  projectsLabel: "Open-source projects",
+  ctaLabel: "Get in touch",
+  viewAllLabel: "View all",
 };
 
 const zh: Dictionary = {
@@ -128,6 +138,11 @@ const zh: Dictionary = {
   linkedinLabel: "领英",
   wechatLabel: "微信",
   wechatQrPlaceholder: "微信二维码——图片占位",
+  featuredLabel: "精选案例",
+  latestPostsLabel: "最新心得",
+  projectsLabel: "开源项目",
+  ctaLabel: "联系我",
+  viewAllLabel: "查看全部",
 };
 
 export function getDictionary(lang: Lang): Dictionary {
