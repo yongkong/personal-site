@@ -2,6 +2,8 @@
 // replacing placeholder values never requires touching components.
 export const siteConfig = {
   name: "yongkong",
+  // TODO(owner asset, ticket 09): confirm once the domain is purchased and bound.
+  siteUrl: "https://yongkong.dev",
   // TODO(owner asset, ticket 09): replace with real values before launch.
   authorRealName: "[REAL NAME]",
   // TODO(owner asset, ticket 09): hello@yongkong.dev once the domain and

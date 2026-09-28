@@ -14,7 +14,15 @@ export async function metadataFor(
   lang: Lang,
   get: (lang: Lang, slug: string) => ContentItem | undefined,
   slug: string,
-): Promise<{ title?: string; description?: string }> {
+): Promise<{ title?: string; description?: string; openGraph?: { title: string; description: string } }> {
   const item = get(lang, slug);
-  return item ? { title: item.title, description: item.description } : {};
+  // openGraph must be set per page: a layout-level openGraph would override
+  // the page title in og:title on every detail page.
+  return item
+    ? {
+        title: item.title,
+        description: item.description,
+        openGraph: { title: item.title, description: item.description },
+      }
+    : {};
 }

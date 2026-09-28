@@ -41,6 +41,7 @@ const blogMeta = (lang) =>
         .map((f) => {
           const raw = readFileSync(join(contentDir(lang), f), "utf8");
           return {
+            slug: f.replace(/\.mdx$/, ""),
             title: (raw.match(/^title:\s*"?(.+?)"?\s*$/m) || [])[1],
             date: (raw.match(/^date:\s*(.+)$/m) || [])[1]?.trim() ?? "",
           };
@@ -244,6 +245,51 @@ for (const lang of ["en", "zh"]) {
     check(`${lang} home links project card: ${url.split("/").pop()}`, home.includes(url));
   }
 }
+
+// --- SEO & finishing (ticket 06) ---
+// Sitemap expectations derived from content dirs; og:title asserted at the
+// meta-tag level (not page text) so a layout-level override cannot pass.
+const sitemap = read("sitemap.xml");
+const robots = read("robots.txt");
+
+check("sitemap.xml generated", !!sitemap);
+check("robots.txt generated", !!robots);
+check("platform 404 fallback generated", !!read("404.html"));
+check("OG placeholder image exported", existsSync(join(outDir, "og.png")));
+
+if (sitemap) {
+  check("sitemap covers zh routes", sitemap.includes("/zh/"));
+  for (const lang of ["en", "zh"]) {
+    const blogSlug = blogMeta(lang)[0]?.slug;
+    if (blogSlug) check(`sitemap covers ${lang} latest blog post`, sitemap.includes(`/blog/${blogSlug}/`) || sitemap.includes(`/zh/blog/${blogSlug}/`));
+    const caseSlug = caseStudyMeta(lang)[0]?.slug;
+    if (caseSlug) check(`sitemap covers ${lang} latest case study`, sitemap.includes(`/${lang === "en" ? "" : "zh/"}case-studies/${caseSlug}/`));
+  }
+}
+if (robots) {
+  check("robots allows all crawlers", robots.includes("Allow: /") || robots.includes("allow: /"));
+  check("robots points to sitemap", robots.includes("sitemap.xml"));
+}
+
+for (const lang of ["en", "zh"]) {
+  const home = lang === "en" ? en : zh;
+  if (!home) continue;
+  check(`${lang} home has og:title`, home.includes('property="og:title"'));
+  check(
+    `${lang} home og:title carries language copy`,
+    lang === "en" ? home.includes("Full-Stack Developer") : home.includes("全栈开发者"),
+  );
+  check(`${lang} home has og:image`, home.includes('property="og:image"'));
+  const post = blogMeta(lang)[0];
+  const postHtml = post ? read(`${langRoot(lang)}blog/${post.slug}/index.html`) : null;
+  if (postHtml && post) {
+    check(
+      `${lang} post detail og:title is the post title (meta-tag level)`,
+      postHtml.includes(`property="og:title" content="${post.title}"`),
+    );
+  }
+}
+check("favicon served", existsSync(join(outDir, "favicon.ico")));
 
 console.log(failures ? `\n${failures} check(s) failed` : "\nAll checks passed");
 process.exit(failures ? 1 : 0);
