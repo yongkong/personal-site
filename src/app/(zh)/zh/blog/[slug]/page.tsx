@@ -3,9 +3,10 @@ import { notFound } from "next/navigation";
 
 import { BlogPostView } from "@/components/blog-post";
 import { getBlogPost, getBlogPosts } from "@/lib/content";
+import { metadataFor, staticParamsFor } from "@/lib/route-helpers";
 
 export function generateStaticParams() {
-  return getBlogPosts("zh").map((post) => ({ slug: post.slug }));
+  return staticParamsFor("zh", getBlogPosts);
 }
 
 export async function generateMetadata({
@@ -14,8 +15,7 @@ export async function generateMetadata({
   params: Promise<{ slug: string }>;
 }): Promise<Metadata> {
   const { slug } = await params;
-  const post = getBlogPost("zh", slug);
-  return post ? { title: post.title, description: post.description } : {};
+  return metadataFor("zh", getBlogPost, slug);
 }
 
 export default async function BlogPostPage({

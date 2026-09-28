@@ -15,12 +15,63 @@ const read = (p) => {
   return existsSync(f) ? readFileSync(f, "utf8") : null;
 };
 
+const caseStudyMeta = (lang) =>
+  existsSync(join("content", lang, "case-studies"))
+    ? readdirSync(join("content", lang, "case-studies"))
+        .filter((f) => f.endsWith(".mdx"))
+        .map((f) => {
+          const raw = readFileSync(join("content", lang, "case-studies", f), "utf8");
+          return {
+            slug: f.replace(/\.mdx$/, ""),
+            title: (raw.match(/^title:\s*"?(.+?)"?\s*$/m) || [])[1],
+            draft: /^draft:\s*true\s*$/m.test(raw),
+          };
+        })
+        .filter((s) => s.title)
+    : [];
+
 const en = read("index.html");
 const zh = read("zh/index.html");
 const enBlog = read("blog/index.html");
 const zhBlog = read("zh/blog/index.html");
 const enPost = read("blog/placeholder-ai-workflow/index.html");
 const zhPost = read("zh/blog/placeholder-zh-only/index.html");
+
+// --- Case Study collection (ticket 03) ---
+// Expectations derived from the content directories (rule-based, survives
+// ticket 07's real content). The four section headings are this script's
+// independent source of truth for the Case Study template.
+const CASE_STUDY_SECTIONS = {
+  en: ["Background", "My role", "Technical decisions", "Outcome"],
+  zh: ["背景", "我的角色", "技术决策", "结果"],
+};
+const langRoot = (lang) => (lang === "en" ? "" : "zh/");
+
+const caseList = { en: read("case-studies/index.html"), zh: read("zh/case-studies/index.html") };
+check("en case study list route exists", !!caseList.en);
+check("zh case study list route exists", !!caseList.zh);
+
+for (const lang of ["en", "zh"]) {
+  const studies = caseStudyMeta(lang);
+  check(`${lang} has at least two case studies mounted`, studies.length >= 2);
+
+  for (const study of studies) {
+    check(`${lang} case list shows "${study.title}"`, caseList[lang]?.includes(study.title) ?? false);
+    const detail = read(`${langRoot(lang)}case-studies/${study.slug}/index.html`);
+    check(`${lang} detail route exists: ${study.slug}`, !!detail);
+    if (!detail) continue;
+    for (const heading of CASE_STUDY_SECTIONS[lang]) {
+      check(`${lang}/${study.slug} renders section "${heading}"`, detail.includes(`>${heading}<`));
+    }
+    check(
+      `${lang}/${study.slug} draft banner matches draft flag`,
+      detail.includes('data-draft="true"') === study.draft,
+    );
+    if (study.draft) {
+      check(`${lang} case list shows draft chip for "${study.title}"`, caseList[lang]?.includes("data-draft-chip") ?? false);
+    }
+  }
+}
 
 check("out/index.html exists (en home)", !!en);
 check("out/zh/index.html exists (zh home)", !!zh);

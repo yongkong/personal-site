@@ -1,12 +1,12 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 
-import { BlogPostView } from "@/components/blog-post";
-import { getBlogPost, getBlogPosts } from "@/lib/content";
+import { CaseStudyView } from "@/components/case-study-view";
+import { getCaseStudies, getCaseStudy } from "@/lib/content";
 import { metadataFor, staticParamsFor } from "@/lib/route-helpers";
 
 export function generateStaticParams() {
-  return staticParamsFor("en", getBlogPosts);
+  return staticParamsFor("en", getCaseStudies);
 }
 
 export async function generateMetadata({
@@ -15,16 +15,16 @@ export async function generateMetadata({
   params: Promise<{ slug: string }>;
 }): Promise<Metadata> {
   const { slug } = await params;
-  return metadataFor("en", getBlogPost, slug);
+  return metadataFor("en", getCaseStudy, slug);
 }
 
-export default async function BlogPostPage({
+export default async function CaseStudyPage({
   params,
 }: {
   params: Promise<{ slug: string }>;
 }) {
   const { slug } = await params;
-  const post = getBlogPost("en", slug);
-  if (!post) notFound();
-  return <BlogPostView lang="en" post={post} />;
+  const study = getCaseStudy("en", slug);
+  if (!study) notFound();
+  return <CaseStudyView lang="en" study={study} />;
 }

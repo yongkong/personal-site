@@ -15,6 +15,12 @@ export function SiteHeader({ lang }: { lang: Lang }) {
         </Link>
         <div className="flex items-center gap-2">
           <Link
+            href={dict.caseStudiesHref}
+            className="rounded-md px-3 py-1.5 text-sm text-muted transition-colors hover:text-foreground"
+          >
+            {dict.caseStudiesLabel}
+          </Link>
+          <Link
             href={dict.blogHref}
             className="rounded-md px-3 py-1.5 text-sm text-muted transition-colors hover:text-foreground"
           >

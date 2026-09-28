@@ -18,6 +18,13 @@ export type Dictionary = {
   blogListSubtitle: string;
   blogBackLabel: string;
   postedOnLabel: string;
+  caseStudiesLabel: string;
+  caseStudiesHref: string;
+  caseStudiesListTitle: string;
+  caseStudiesListSubtitle: string;
+  caseStudiesBackLabel: string;
+  draftBanner: string;
+  draftChip: string;
 };
 
 const en: Dictionary = {
@@ -41,6 +48,14 @@ const en: Dictionary = {
     "Notes on engineering practice, AI-native workflow, and long-term system maintenance.",
   blogBackLabel: "All posts",
   postedOnLabel: "Posted on",
+  caseStudiesLabel: "Case Studies",
+  caseStudiesHref: "/case-studies/",
+  caseStudiesListTitle: "Case Studies",
+  caseStudiesListSubtitle:
+    "Deep dives into selected work — the background, my role, the technical decisions, and the outcome.",
+  caseStudiesBackLabel: "All case studies",
+  draftBanner: "Draft — placeholder content. The full write-up is in progress.",
+  draftChip: "Draft",
 };
 
 const zh: Dictionary = {
@@ -62,6 +77,13 @@ const zh: Dictionary = {
   blogListSubtitle: "关于工程实践、AI 原生工作流与长期系统维护的记录。",
   blogBackLabel: "全部心得",
   postedOnLabel: "发布于",
+  caseStudiesLabel: "案例研究",
+  caseStudiesHref: "/zh/case-studies/",
+  caseStudiesListTitle: "案例研究",
+  caseStudiesListSubtitle: "精选工作的深度剖析——背景、我的角色、技术决策与结果。",
+  caseStudiesBackLabel: "全部案例研究",
+  draftBanner: "草稿——当前为占位内容，完整撰写进行中。",
+  draftChip: "草稿",
 };
 
 export function getDictionary(lang: Lang): Dictionary {
