@@ -1,32 +1,66 @@
 ---
 title: "12 Years on an Enterprise Case-Management Platform"
-description: "Anonymized deep dive: maintaining and evolving a US enterprise case-management platform for 12 years."
+description: "Anonymized deep dive: the foundations of a US social-services case-management platform — gateway, auth, data engine — and a ten-million-row replication pipeline, maintained across six platform generations."
 date: 2026-09-01
-draft: true
 featured: true
 ---
 
-> **[PLACEHOLDER]** — real content arrives in ticket 07 (agent interviews the
-> author, then the author finalizes). Anonymization boundaries confirmed with
-> the author before publishing.
-
 ## Background
 
-[PLACEHOLDER] Industry, platform scale, why the system matters to its users,
-and the constraint that shaped everything: it could never go down.
+A US social-services organization runs a case-management platform whose job
+is direct and humane: register people experiencing homelessness, and
+coordinate the help each of them receives. Every case worker's day moves
+through this system; it is the operational backbone of the agency, not a
+back-office tool.
+
+I was part of a 20-person development team for twelve years. The numbers I
+can't publish (scale, client specifics) stay unpublished — the architecture
+and the work are what matter here.
 
 ## My role
 
-[PLACEHOLDER] Responsibilities owned across 12 years — feature work,
-maintenance, upgrades, on-call, and the long-term relationship with the US
-client.
+I owned the parts every other module stood on:
+
+- the gateway layer — reverse proxy (YARP), authentication, and the shared
+  operations libraries every server consumed
+- a unified data-access engine: read, refresh, and update against the data
+  sources behind one interface, so feature teams never wrote raw data code
+- a set of standalone services and their multi-year upgrades: Account
+  Server, Chat Server, Library Server
+- horizontal tooling: data conversion utilities, a short-link service, and
+  database replication tooling
+
+In a team of twenty, "the foundations developer" is a specific kind of
+trust: when your module breaks, everyone's breaks.
 
 ## Technical decisions
 
-[PLACEHOLDER] Key decisions on the C#/.NET stack, data modeling, and upgrade
-strategy — what aged well and what we would do differently.
+The platform crossed six major generations without a from-scratch rewrite:
+VB.NET and WinForms → Silverlight → ASP.NET MVC → AngularJS SPA → Angular
++ .NET Core → microservices on .NET 8. The data layer stayed SQL Server
+throughout, accessed via EF and Dapper depending on the workload; deployment
+moved from on-premises servers to cloud. Each generation was a live
+migration, not a greenfield restart — the lesson embedded in every one of
+those upgrades is that long-lived systems die from *skipped* upgrades far
+more often than from big ones done carefully.
+
+The work I'm proudest of is the replication pipeline between SQL Server and
+Oracle. Tens of millions of rows, tracked via SQL Server Change Tracking
+and applied to Oracle by a Windows Service on the other side. Early
+versions were slow and occasionally lost data; the final architecture made
+that impossible by construction:
+
+- SQL Server side exposed an API with pre-flight CT health checks and change
+  status queries
+- the Oracle-side Windows Service consumed changes in batches, with batched
+  inserts, structured error tracking, and email alerting when anything
+  drifted
+- every stage was observable, so "is the sync healthy?" was a status query,
+  not an investigation
 
 ## Outcome
 
-[PLACEHOLDER] Measurable results: uptime, delivery cadence, and what 12 years
-of sustained ownership taught about maintainable systems.
+Twelve years, six platform generations, zero rewrites. The replication
+pipeline went from slow-and-lossy to fast and exactly correct at
+tens-of-millions-of-rows scale — and, just as importantly, from "debuggable
+only by the person who wrote it" to "operable by whoever was on call."

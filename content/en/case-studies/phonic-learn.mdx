@@ -1,30 +1,49 @@
 ---
 title: "Building phonic-learn in Three Days"
-description: "How an AI-native workflow (spec → tickets → implement) compressed a bilingual course site into a 3-day solo build."
+description: "A solo bilingual course site shipped in three days — where the delivery method was the subject: spec → tickets → implement, with assertions and review on every diff."
 date: 2026-09-05
-draft: true
 featured: true
 ---
 
-> **[PLACEHOLDER]** — real content arrives in ticket 07. The receipts exist:
-> the site is live and the build log tells the story.
-
 ## Background
 
-[PLACEHOLDER] What phonic-learn is — a bilingual course site teaching
-AI-native workflows — and why it had to ship fast.
+phonic-learn is a bilingual course site teaching AI-native development
+workflows ("Agent Skills 中文课"). The audience is Chinese-speaking
+developers moving from "I use AI to autocomplete" to "AI is part of a
+disciplined process." The constraint was brutal and familiar: one person,
+no design team, and a reason to ship *this week* — content sites that
+launch stale never launch.
 
 ## My role
 
-[PLACEHOLDER] Solo build: spec, content, design, implementation, deployment.
+Solo, end to end: spec, information architecture, content, design,
+implementation, and deployment. That sounds like a lot until you separate
+what the AI-native workflow actually requires from a human — deciding,
+mostly — from what it doesn't — typing, mostly.
 
 ## Technical decisions
 
-[PLACEHOLDER] Next.js + MDX on a static host; where the AI workflow
-(spec → tickets → implement, with code review) actually saved time and where
-human judgment stayed irreplaceable.
+Next.js + TypeScript + MDX, statically exported. Content lives in MDX with
+build-time frontmatter validation: a post with a missing title or date
+fails the build rather than rendering broken. The delivery method mirrored
+the course subject:
+
+1. a short spec — positioning, sections, what's explicitly out of scope
+2. tracer-bullet tickets, each a vertical slice with acceptance criteria
+3. one pre-agreed testing seam (the rendered static output) with
+   scriptable assertions, so "done" was checkable by a machine
+4. code review on every diff — including the AI-written parts, *especially*
+   the AI-written parts
+
+The stack was chosen for restartability, not novelty: everything I already
+had proof I could ship fast.
 
 ## Outcome
 
-[PLACEHOLDER] Shipped in 3 days; what the AI workflow made cheap and what it
-did not.
+Idea to deployed static site in three days, working evenings. What the
+workflow made genuinely cheap: scaffolding, boilerplate, the MDX pipeline,
+first drafts of repetitive structure. What stayed expensive, correctly:
+positioning, ordering of ideas, and the final read of every sentence a
+learner would see. The receipts live in the repository — build logs,
+assertion counts, commit history — which is the point: claims about an
+AI-native workflow should be auditable, not aspirational.

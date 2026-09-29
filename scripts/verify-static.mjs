@@ -59,8 +59,6 @@ const en = read("index.html");
 const zh = read("zh/index.html");
 const enBlog = read("blog/index.html");
 const zhBlog = read("zh/blog/index.html");
-const enPost = read("blog/placeholder-ai-workflow/index.html");
-const zhPost = read("zh/blog/placeholder-zh-only/index.html");
 
 // --- Case Study collection (ticket 03) ---
 // Expectations derived from the content directories (rule-based, survives
@@ -122,8 +120,6 @@ if (en && zh) {
 // versa.
 check("en blog list route exists", !!enBlog);
 check("zh blog list route exists", !!zhBlog);
-check("en post detail route exists", !!enPost);
-check("zh post detail route exists", !!zhPost);
 
 const frontmatterTitle = (file) =>
   (readFileSync(file, "utf8").match(/^title:\s*"?(.+?)"?\s*$/m) || [])[1];
@@ -141,7 +137,7 @@ const enTitles = titlesIn("en");
 check("zh blog content directory has posts", zhTitles.length > 0);
 check("en blog content directory has posts", enTitles.length > 0);
 
-if (enBlog && zhBlog && enPost && zhPost) {
+if (enBlog && zhBlog) {
   for (const title of zhTitles) {
     check(`zh post listed in zh blog: "${title}"`, zhBlog.includes(title));
     check(`zh post absent from en blog: "${title}"`, !enBlog.includes(title));
@@ -150,14 +146,19 @@ if (enBlog && zhBlog && enPost && zhPost) {
     check(`en post listed in en blog: "${title}"`, enBlog.includes(title));
     check(`en post absent from zh blog: "${title}"`, !zhBlog.includes(title));
   }
-  check("en post detail renders body copy", enPost.includes("This placeholder post proves the English blog pipeline"));
-  check("zh post detail renders body copy", zhPost.includes("这篇占位心得用于验证中文内容管线"));
-  // MDX typography elements actually rendered, not just body text.
-  for (const [name, page] of [["en", enPost], ["zh", zhPost]]) {
-    check(`${name} post renders h2 heading`, page.includes("<h2"));
-    check(`${name} post renders code block`, page.includes("<code"));
-    check(`${name} post renders blockquote`, page.includes("<blockquote"));
-    check(`${name} post renders list`, page.includes("<li"));
+  // Detail pages: latest post per language, derived dynamically.
+  for (const lang of ["en", "zh"]) {
+    const first = blogMeta(lang)[0];
+    const detail = first ? read(`${langRoot(lang)}blog/${first.slug}/index.html`) : null;
+    check(`${lang} latest post detail route exists: ${first?.slug}`, !!detail);
+    if (detail && first) {
+      check(`${lang} latest post detail renders its title`, detail.includes(first.title));
+      // MDX typography elements actually rendered, not just body text.
+      check(`${lang} post renders h2 heading`, detail.includes("<h2"));
+      check(`${lang} post renders code block`, detail.includes("<code"));
+      check(`${lang} post renders blockquote`, detail.includes("<blockquote"));
+      check(`${lang} post renders list`, detail.includes("<li"));
+    }
   }
 }
 
