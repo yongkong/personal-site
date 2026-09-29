@@ -1,5 +1,7 @@
 import type { Metadata } from "next";
 
+import "@/app/globals.css";
+
 import { DocumentShell } from "@/components/document-shell";
 import { getDictionary } from "@/lib/i18n";
 import { siteConfig } from "@/lib/site-config";

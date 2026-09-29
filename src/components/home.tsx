@@ -39,7 +39,9 @@ export function Home({ lang }: { lang: Lang }) {
           ))}
         </ul>
         <div>
-          <Button render={<Link href={dict.contactHref} />}>{dict.ctaLabel}</Button>
+          <Button render={<Link href={dict.contactHref} />} nativeButton={false}>
+            {dict.ctaLabel}
+          </Button>
         </div>
       </section>
 

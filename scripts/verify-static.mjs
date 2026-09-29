@@ -15,6 +15,11 @@ const read = (p) => {
   return existsSync(f) ? readFileSync(f, "utf8") : null;
 };
 
+const readdirRecursive = (dir) =>
+  readdirSync(dir, { withFileTypes: true }).flatMap((entry) =>
+    entry.isDirectory() ? readdirRecursive(join(dir, entry.name)) : [join(dir, entry.name)],
+  );
+
 const caseStudyMeta = (lang) =>
   existsSync(join("content", lang, "case-studies"))
     ? readdirSync(join("content", lang, "case-studies"))
@@ -291,6 +296,19 @@ for (const lang of ["en", "zh"]) {
   }
 }
 check("favicon served", existsSync(join(outDir, "favicon.ico")));
+
+// --- Stylesheet presence (ticket 06 follow-up) ---
+// A phantom @import once made the whole stylesheet vanish while every HTML
+// assertion stayed green — CSS must be asserted, not assumed.
+const cssFiles = existsSync(join(outDir, "_next", "static"))
+  ? readdirRecursive(join(outDir, "_next", "static")).filter((f) => f.endsWith(".css"))
+  : [];
+check("build emits at least one stylesheet", cssFiles.length > 0);
+if (cssFiles.length > 0) {
+  const css = cssFiles.map((f) => readFileSync(f, "utf8")).join("\n");
+  check("stylesheet carries the design tokens", css.includes("--color-background"));
+  check("stylesheet includes typography plugin output", css.includes(".prose"));
+}
 
 console.log(failures ? `\n${failures} check(s) failed` : "\nAll checks passed");
 process.exit(failures ? 1 : 0);
