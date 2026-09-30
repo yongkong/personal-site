@@ -185,35 +185,27 @@ for (const lang of ["en", "zh"]) {
   const contact = contactPages[lang];
   if (contact) {
     check(`${lang} contact renders email (mailto placeholder)`, contact.includes("mailto:"));
-    check(`${lang} contact renders booking link entry`, contact.includes("cal.com") || contact.includes("CAL.COM"));
     check(`${lang} contact links GitHub`, contact.includes("github.com/yongkong"));
-    check(`${lang} contact renders LinkedIn entry (placeholder ok)`, contact.includes("LinkedIn") || contact.includes("领英"));
   }
 }
 
-// Contact entries must point at the configured URLs (href-level, derived from
-// site-config so ticket 09's real values keep these checks meaningful).
+// Contact = email + GitHub only (owner decision, launch pass): booking link,
+// LinkedIn and the WeChat QR slot were removed — assert both presence of the
+// real email and absence of the removed surfaces on every page.
 const siteConfigSrc = readFileSync("src/lib/site-config.ts", "utf8");
 const configValue = (key) => (siteConfigSrc.match(new RegExp(`${key}:\\s*"([^"]+)"`)) || [])[1];
 const cfgEmail = configValue("email");
-const cfgBook = configValue("bookCallUrl");
-const cfgLinkedin = configValue("linkedinUrl");
 
 for (const lang of ["en", "zh"]) {
   const contact = contactPages[lang];
   if (contact && cfgEmail) {
     check(`${lang} contact email href matches site config`, contact.includes(`href="mailto:${cfgEmail}"`));
-  }
-  if (contact && cfgBook) {
-    check(`${lang} contact booking href matches site config`, contact.includes(`href="${cfgBook}"`));
-  }
-  if (contact && cfgLinkedin) {
-    check(`${lang} contact LinkedIn href matches site config`, contact.includes(`href="${cfgLinkedin}"`));
+    check(`${lang} contact shows the real email address`, contact.includes(cfgEmail));
+    check(`${lang} contact has no booking link (removed by owner)`, !/cal\.com/i.test(contact));
+    check(`${lang} contact has no LinkedIn entry (removed by owner)`, !/linkedin/i.test(contact) && !contact.includes("领英"));
   }
 }
 
-// WeChat QR slot lives in the zh footer only (spec: language-differentiated
-// contact surface) — asserted per rendered page, both directions.
 const renderedPages = {
   en: { home: en, blog: enBlog, "case studies": caseList.en, about: aboutPages.en, contact: contactPages.en },
   zh: { home: zh, blog: zhBlog, "case studies": caseList.zh, about: aboutPages.zh, contact: contactPages.zh },
@@ -221,11 +213,7 @@ const renderedPages = {
 for (const [lang, pages] of Object.entries(renderedPages)) {
   for (const [pageName, html] of Object.entries(pages)) {
     if (!html) continue;
-    if (lang === "en") {
-      check(`en ${pageName} page has no WeChat QR slot`, !html.includes("data-wechat-qr"));
-    } else {
-      check(`zh ${pageName} page has WeChat QR slot`, html.includes("data-wechat-qr"));
-    }
+    check(`${lang} ${pageName} page has no WeChat QR slot (removed by owner)`, !html.includes("data-wechat-qr"));
   }
 }
 

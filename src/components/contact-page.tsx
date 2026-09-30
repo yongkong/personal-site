@@ -9,9 +9,7 @@ export function ContactPage({ lang }: { lang: Lang }) {
 
   const entries: { label: string; value: string; href: string }[] = [
     { label: dict.emailLabel, value: siteConfig.email, href: `mailto:${siteConfig.email}` },
-    { label: dict.bookCallLabel, value: siteConfig.bookCallUrl, href: siteConfig.bookCallUrl },
     { label: dict.githubLabel, value: siteConfig.github, href: siteConfig.github },
-    { label: dict.linkedinLabel, value: siteConfig.linkedinUrl, href: siteConfig.linkedinUrl },
   ];
 
   return (

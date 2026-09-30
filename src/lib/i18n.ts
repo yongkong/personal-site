@@ -45,10 +45,6 @@ export type Dictionary = {
   contactTitle: string;
   contactSubtitle: string;
   emailLabel: string;
-  bookCallLabel: string;
-  linkedinLabel: string;
-  wechatLabel: string;
-  wechatQrPlaceholder: string;
   featuredLabel: string;
   latestPostsLabel: string;
   projectsLabel: string;
@@ -107,10 +103,6 @@ const en: Dictionary = {
   contactTitle: "Contact",
   contactSubtitle: "The fastest way to start a conversation.",
   emailLabel: "Email",
-  bookCallLabel: "Book a call (Cal.com)",
-  linkedinLabel: "LinkedIn",
-  wechatLabel: "WeChat",
-  wechatQrPlaceholder: "WeChat QR — image placeholder",
   featuredLabel: "Featured work",
   latestPostsLabel: "Latest posts",
   projectsLabel: "Open-source projects",
@@ -165,10 +157,6 @@ const zh: Dictionary = {
   contactTitle: "联系",
   contactSubtitle: "最快开始交流的方式。",
   emailLabel: "邮箱",
-  bookCallLabel: "预约通话（Cal.com）",
-  linkedinLabel: "领英",
-  wechatLabel: "微信",
-  wechatQrPlaceholder: "微信二维码——图片占位",
   featuredLabel: "精选案例",
   latestPostsLabel: "最新心得",
   projectsLabel: "开源项目",
