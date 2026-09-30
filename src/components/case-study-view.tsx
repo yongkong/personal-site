@@ -1,6 +1,7 @@
 import { MDXRemote } from "next-mdx-remote/rsc";
 
 import { PageShell } from "@/components/page-shell";
+import { Stat } from "@/components/stat";
 import type { CaseStudy } from "@/lib/content";
 import { formatDate } from "@/lib/dates";
 import { getDictionary, type Lang } from "@/lib/i18n";
@@ -19,11 +20,11 @@ export function CaseStudyView({ lang, study }: { lang: Lang; study: CaseStudy })
           {dict.draftBanner}
         </div>
       )}
-      <p className="mt-2 text-sm text-muted-foreground">
+      <p className="mt-3 font-mono text-xs tracking-wide text-muted-foreground">
         {dict.postedOnLabel} {formatDate(study.date, lang)}
       </p>
       <div className="prose mt-8 max-w-none dark:prose-invert">
-        <MDXRemote source={study.body} />
+        <MDXRemote source={study.body} components={{ Stat }} />
       </div>
     </PageShell>
   );

@@ -295,7 +295,14 @@ for (const lang of ["en", "zh"]) {
     );
   }
 }
-check("favicon served", existsSync(join(outDir, "favicon.ico")));
+// --- Visual polish (ticket 10) ---
+// Custom {yk} favicon (app metadata files), brand fonts self-hosted via
+// fontsource, single blue accent token, hero stat anchor, Stat blocks.
+const iconSvg = existsSync(join(outDir, "icon.svg"))
+  ? readFileSync(join(outDir, "icon.svg"), "utf8")
+  : null;
+check("custom {yk} favicon emitted (icon.svg)", !!iconSvg && iconSvg.includes("yk"));
+check("apple touch icon emitted", existsSync(join(outDir, "apple-icon.png")));
 
 // --- Stylesheet presence (ticket 06 follow-up) ---
 // A phantom @import once made the whole stylesheet vanish while every HTML
@@ -308,6 +315,26 @@ if (cssFiles.length > 0) {
   const css = cssFiles.map((f) => readFileSync(f, "utf8")).join("\n");
   check("stylesheet carries the design tokens", css.includes("--color-background"));
   check("stylesheet includes typography plugin output", css.includes(".prose"));
+  check("brand fonts self-hosted (IBM Plex Sans Variable)", css.includes("IBM Plex Sans Variable"));
+  check("brand mono self-hosted (JetBrains Mono Variable)", css.includes("JetBrains Mono Variable"));
+  check("brand accent token defined (both modes)", (css.match(/--brand:/g) ?? []).length >= 2);
+  check("brand accent actually used (.text-brand utility)", css.includes(".text-brand"));
+}
+
+for (const lang of ["en", "zh"]) {
+  const home = lang === "en" ? en : zh;
+  if (home) {
+    check(
+      `${lang} home hero has mono stat anchor`,
+      home.includes(">20+<") && home.includes(">UTC+8<"),
+    );
+  }
+  for (const study of caseStudyMeta(lang)) {
+    const detail = read(`${langRoot(lang)}case-studies/${study.slug}/index.html`);
+    if (detail) {
+      check(`${lang} case study "${study.slug}" renders Stat blocks`, detail.includes('data-stat="true"'));
+    }
+  }
 }
 
 console.log(failures ? `\n${failures} check(s) failed` : "\nAll checks passed");

@@ -1,21 +1,47 @@
 import Link from "next/link";
+import { ArrowRight, ArrowUpRight } from "lucide-react";
 
 import { DraftChip } from "@/components/draft-chip";
-import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
 import { getBlogPosts, getCaseStudies } from "@/lib/content";
 import { formatDate } from "@/lib/dates";
 import { getDictionary, type Lang } from "@/lib/i18n";
 import { PROJECTS } from "@/lib/projects";
 
-const sectionClass = "mx-auto w-full max-w-4xl px-4 py-12";
+const sectionClass = "mx-auto w-full max-w-4xl px-4 pt-16";
+
+function SectionHeader({
+  num,
+  title,
+  viewAllHref,
+  viewAllLabel,
+}: {
+  num: string;
+  title: string;
+  viewAllHref?: string;
+  viewAllLabel?: string;
+}) {
+  return (
+    <header className="border-t border-border pt-5">
+      <div className="flex items-baseline justify-between gap-4">
+        <h2 className="flex items-baseline gap-3 text-xl font-semibold tracking-tight">
+          <span className="font-mono text-sm font-medium text-brand" aria-hidden="true">
+            {num}
+          </span>
+          {title}
+        </h2>
+        {viewAllHref && viewAllLabel && (
+          <Link
+            href={viewAllHref}
+            className="font-mono text-xs tracking-wider text-muted-foreground underline-offset-4 transition-colors hover:text-brand hover:underline"
+          >
+            {viewAllLabel} →
+          </Link>
+        )}
+      </div>
+    </header>
+  );
+}
 
 export function Home({ lang }: { lang: Lang }) {
   const dict = getDictionary(lang);
@@ -26,41 +52,93 @@ export function Home({ lang }: { lang: Lang }) {
 
   return (
     <div>
-      <section className="mx-auto flex w-full max-w-4xl flex-col gap-6 px-4 py-24">
-        <h1 className="text-3xl font-semibold leading-tight tracking-tight sm:text-4xl">
-          {dict.positioningLine}
-        </h1>
-        <p className="text-lg text-muted-foreground">{dict.heroSubline}</p>
-        <ul className="flex flex-wrap gap-2" aria-label="skills">
-          {dict.skillChips.map((chip) => (
-            <li key={chip} className="rounded-full border border-border px-3 py-1 text-sm text-muted-foreground">
-              {chip}
-            </li>
-          ))}
-        </ul>
-        <div>
-          <Button render={<Link href={dict.contactHref} />} nativeButton={false}>
-            {dict.ctaLabel}
-          </Button>
+      <section className="relative border-b border-border">
+        <div
+          aria-hidden="true"
+          className="bg-blueprint absolute inset-0 [mask-image:radial-gradient(ellipse_70%_80%_at_30%_20%,black_20%,transparent_75%)]"
+        />
+        <div className="relative mx-auto flex w-full max-w-4xl flex-col gap-6 px-4 py-20 sm:py-28">
+          <p className="font-mono text-sm font-medium tracking-widest text-brand uppercase">
+            {"// "}
+            {dict.heroEyebrow}
+          </p>
+          <h1 className="max-w-2xl text-4xl leading-tight font-semibold tracking-tight text-balance sm:text-5xl">
+            {dict.positioningLine}
+          </h1>
+          <p className="max-w-2xl text-lg text-muted-foreground">{dict.heroSubline}</p>
+          <ul className="flex flex-wrap gap-2" aria-label="skills">
+            {dict.skillChips.map((chip) => (
+              <li
+                key={chip}
+                className="rounded-md border border-border bg-muted/60 px-2 py-1 font-mono text-[13px] text-muted-foreground"
+              >
+                {chip}
+              </li>
+            ))}
+          </ul>
+          <div className="mt-2 flex flex-wrap items-center gap-4">
+            <Button
+              size="lg"
+              className="px-5"
+              render={<Link href={dict.contactHref} />}
+              nativeButton={false}
+            >
+              {dict.ctaLabel}
+              <ArrowRight aria-hidden="true" data-icon="inline-end" />
+            </Button>
+            <Link
+              href={dict.caseStudiesHref}
+              className="font-mono text-sm text-muted-foreground underline-offset-4 transition-colors hover:text-brand hover:underline"
+            >
+              {dict.secondaryCtaLabel} →
+            </Link>
+          </div>
+          <dl className="mt-8 grid grid-cols-2 gap-x-6 gap-y-6 border-t border-border pt-8 sm:grid-cols-4">
+            {dict.heroStats.map((stat) => (
+              <div key={stat.value} className="flex flex-col gap-1">
+                <dt className="order-2 text-xs leading-snug text-muted-foreground">{stat.label}</dt>
+                <dd className="order-1 font-mono text-2xl font-semibold tracking-tight text-brand">
+                  {stat.value}
+                </dd>
+              </div>
+            ))}
+          </dl>
         </div>
       </section>
 
       <section className={sectionClass}>
-        <div className="flex items-baseline justify-between">
-          <h2 className="text-2xl font-semibold tracking-tight">{dict.featuredLabel}</h2>
-          <Link href={dict.caseStudiesHref} className="text-sm text-muted-foreground underline-offset-4 hover:underline">
-            {dict.viewAllLabel}
-          </Link>
-        </div>
-        <ul className="mt-6 flex flex-col gap-6">
-          {featured.map((study) => (
-            <li key={study.slug} className="border-b border-border pb-6 last:border-0">
-              <Link href={`${dict.caseStudiesHref}${study.slug}/`} className="group block">
-                <h3 className="text-xl font-medium underline-offset-4 group-hover:underline">
-                  {study.title}
-                  {study.draft && <DraftChip label={dict.draftChip} />}
-                </h3>
-                <p className="mt-2 text-muted-foreground">{study.description}</p>
+        <SectionHeader
+          num="01"
+          title={dict.featuredLabel}
+          viewAllHref={dict.caseStudiesHref}
+          viewAllLabel={dict.viewAllLabel}
+        />
+        <ul className="mt-2">
+          {featured.map((study, index) => (
+            <li key={study.slug} className="border-b border-border last:border-0">
+              <Link
+                href={`${dict.caseStudiesHref}${study.slug}/`}
+                className="group flex gap-4 py-5"
+              >
+                <span
+                  aria-hidden="true"
+                  className="pt-0.5 font-mono text-sm text-muted-foreground"
+                >
+                  {String(index + 1).padStart(2, "0")}
+                </span>
+                <div>
+                  <h3 className="flex flex-wrap items-center gap-1 text-lg font-medium transition-colors group-hover:text-brand">
+                    {study.title}
+                    <ArrowUpRight
+                      aria-hidden="true"
+                      className="size-4 text-muted-foreground transition-all group-hover:-translate-y-0.5 group-hover:translate-x-0.5 group-hover:text-brand"
+                    />
+                    {study.draft && <DraftChip label={dict.draftChip} />}
+                  </h3>
+                  <p className="mt-1.5 max-w-xl text-sm leading-relaxed text-muted-foreground">
+                    {study.description}
+                  </p>
+                </div>
               </Link>
             </li>
           ))}
@@ -68,18 +146,31 @@ export function Home({ lang }: { lang: Lang }) {
       </section>
 
       <section className={sectionClass}>
-        <div className="flex items-baseline justify-between">
-          <h2 className="text-2xl font-semibold tracking-tight">{dict.latestPostsLabel}</h2>
-          <Link href={dict.blogHref} className="text-sm text-muted-foreground underline-offset-4 hover:underline">
-            {dict.viewAllLabel}
-          </Link>
-        </div>
-        <ul className="mt-6 flex flex-col gap-4">
-          {latest.map((post) => (
-            <li key={post.slug}>
-              <Link href={`${dict.blogHref}${post.slug}/`} className="group block">
-                <span className="font-medium underline-offset-4 group-hover:underline">{post.title}</span>
-                <span className="ml-3 text-sm text-muted-foreground">{formatDate(post.date, lang)}</span>
+        <SectionHeader
+          num="02"
+          title={dict.latestPostsLabel}
+          viewAllHref={dict.blogHref}
+          viewAllLabel={dict.viewAllLabel}
+        />
+        <ul className="mt-2">
+          {latest.map((post, index) => (
+            <li key={post.slug} className="border-b border-border last:border-0">
+              <Link
+                href={`${dict.blogHref}${post.slug}/`}
+                className="group flex items-baseline gap-4 py-4"
+              >
+                <span
+                  aria-hidden="true"
+                  className="font-mono text-sm text-muted-foreground"
+                >
+                  {String(index + 1).padStart(2, "0")}
+                </span>
+                <span className="font-medium underline-offset-4 transition-colors group-hover:text-brand group-hover:underline">
+                  {post.title}
+                </span>
+                <span className="ml-auto font-mono text-xs whitespace-nowrap text-muted-foreground">
+                  {formatDate(post.date, lang)}
+                </span>
               </Link>
             </li>
           ))}
@@ -87,33 +178,65 @@ export function Home({ lang }: { lang: Lang }) {
       </section>
 
       <section className={sectionClass}>
-        <h2 className="text-2xl font-semibold tracking-tight">{dict.projectsLabel}</h2>
-        <div className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+        <SectionHeader num="03" title={dict.projectsLabel} />
+        <ul className="mt-6 grid gap-4 pb-16 sm:grid-cols-2 lg:grid-cols-3">
           {PROJECTS.map((project) => (
-            <Card key={project.name}>
-              <CardHeader>
-                <CardTitle>{project.name}</CardTitle>
-                <CardDescription>{project.description[lang]}</CardDescription>
-              </CardHeader>
-              <CardContent className="flex flex-col gap-3">
-                <div className="flex flex-wrap gap-2">
+            <li key={project.name}>
+              <a
+                href={project.url}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="group flex h-full flex-col rounded-lg border border-border bg-card p-5 transition-colors hover:border-brand/60"
+              >
+                <div className="flex items-center justify-between gap-2">
+                  <span className="font-mono text-sm font-medium">{project.name}</span>
+                  <ArrowUpRight
+                    aria-hidden="true"
+                    className="size-4 text-muted-foreground transition-all group-hover:-translate-y-0.5 group-hover:translate-x-0.5 group-hover:text-brand"
+                  />
+                </div>
+                <p className="mt-2 flex-1 text-sm leading-relaxed text-muted-foreground">
+                  {project.description[lang]}
+                </p>
+                <div className="mt-4 flex flex-wrap gap-1.5">
                   {project.stack.map((tech) => (
-                    <Badge key={tech} variant="secondary">
+                    <span
+                      key={tech}
+                      className="rounded-sm bg-muted px-1.5 py-0.5 font-mono text-xs text-muted-foreground"
+                    >
                       {tech}
-                    </Badge>
+                    </span>
                   ))}
                 </div>
-                <a
-                  href={project.url}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-sm underline underline-offset-4"
-                >
-                  GitHub
-                </a>
-              </CardContent>
-            </Card>
+              </a>
+            </li>
           ))}
+        </ul>
+      </section>
+
+      <section className="mx-auto w-full max-w-4xl px-4 pb-20">
+        <div className="relative overflow-hidden rounded-xl border border-border bg-card p-8 sm:p-10">
+          <div
+            aria-hidden="true"
+            className="bg-blueprint absolute inset-0 [mask-image:radial-gradient(ellipse_80%_100%_at_100%_0%,black_10%,transparent_70%)]"
+          />
+          <div className="relative flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
+            <div className="max-w-xl">
+              <h2 className="text-2xl font-semibold tracking-tight text-balance">
+                {dict.closingCtaTitle}
+              </h2>
+              <p className="mt-3 text-muted-foreground">{dict.closingCtaSubtitle}</p>
+            </div>
+            <Button
+              size="lg"
+              className="px-5"
+              render={<Link href={dict.contactHref} />}
+              nativeButton={false}
+            >
+              {dict.ctaLabel}
+              <ArrowRight aria-hidden="true" data-icon="inline-end" />
+            </Button>
+          </div>
         </div>
       </section>
     </div>

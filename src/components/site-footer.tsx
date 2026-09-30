@@ -8,7 +8,7 @@ export function SiteFooter({ lang }: { lang: Lang }) {
   return (
     <footer className="border-t border-border">
       <div className="mx-auto flex w-full max-w-4xl flex-col gap-4 px-4 py-6 text-sm text-muted-foreground sm:flex-row sm:items-center sm:justify-between">
-        <span>
+        <span className="font-mono text-xs">
           © {year} {siteConfig.authorRealName} ({siteConfig.name}). {dict.footerNote}
         </span>
         <div className="flex items-center gap-4">
@@ -30,7 +30,7 @@ export function SiteFooter({ lang }: { lang: Lang }) {
             href={siteConfig.github}
             target="_blank"
             rel="noopener noreferrer"
-            className="underline underline-offset-4 transition-colors hover:text-foreground"
+            className="font-mono text-xs underline underline-offset-4 transition-colors hover:text-brand"
           >
             {dict.githubLabel}
           </a>

@@ -10,7 +10,7 @@ export function BlogPostView({ lang, post }: { lang: Lang; post: BlogPost }) {
 
   return (
     <PageShell title={post.title} backHref={dict.blogHref} backLabel={dict.blogBackLabel}>
-      <p className="mt-2 text-sm text-muted-foreground">
+      <p className="mt-3 font-mono text-xs tracking-wide text-muted-foreground">
         {dict.postedOnLabel} {formatDate(post.date, lang)}
       </p>
       <div className="prose mt-8 max-w-none dark:prose-invert">

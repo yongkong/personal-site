@@ -1,10 +1,20 @@
 export type Lang = "en" | "zh";
 
+export type HeroStat = {
+  value: string;
+  label: string;
+};
+
 export type Dictionary = {
   siteTitle: string;
   siteDescription: string;
   positioningLine: string;
   heroSubline: string;
+  heroEyebrow: string;
+  heroStats: HeroStat[];
+  secondaryCtaLabel: string;
+  closingCtaTitle: string;
+  closingCtaSubtitle: string;
   skillChips: string[];
   homeHref: string;
   langSwitchLabel: string;
@@ -53,6 +63,17 @@ const en: Dictionary = {
   positioningLine:
     "Full-stack engineer with 20+ years shipping production systems — now delivered through an AI-native workflow.",
   heroSubline: "C#/.NET · TypeScript/Next.js · Remote, async-friendly, UTC+8",
+  heroEyebrow: "Full-stack engineering",
+  heroStats: [
+    { value: "20+", label: "years shipping production systems" },
+    { value: "12", label: "years owning one enterprise platform for a US client" },
+    { value: "UTC+8", label: "async-friendly, overlaps US & EU hours" },
+    { value: "AI-native", label: "delivery workflow, process-disciplined" },
+  ],
+  secondaryCtaLabel: "View case studies",
+  closingCtaTitle: "Have a system to build — or to keep alive for the next decade?",
+  closingCtaSubtitle:
+    "Long-term ownership is the rare part. Tell me about your product and I'll tell you how I'd approach it.",
   skillChips: ["C#/.NET", "TypeScript", "Next.js", "AI-native workflow"],
   homeHref: "/",
   langSwitchLabel: "中文",
@@ -103,6 +124,16 @@ const zh: Dictionary = {
     "20 余年全栈工程经验，长期维护生产级系统，如今以 AI 原生工作流交付。C#/.NET、TypeScript/Next.js。支持远程与异步协作，UTC+8。",
   positioningLine: "20 余年全栈工程经验，长期维护生产级系统——如今以 AI 原生工作流交付。",
   heroSubline: "C#/.NET · TypeScript/Next.js · 远程友好 · 异步协作 · UTC+8",
+  heroEyebrow: "全栈工程",
+  heroStats: [
+    { value: "20+", label: "年生产级系统开发经验" },
+    { value: "12", label: "年独立承担美国客户的企业级平台" },
+    { value: "UTC+8", label: "异步协作，可重叠美欧工作时区" },
+    { value: "AI 原生", label: "交付工作流，流程严谨" },
+  ],
+  secondaryCtaLabel: "查看案例研究",
+  closingCtaTitle: "有系统要构建——还是要让它再稳定运行十年？",
+  closingCtaSubtitle: "长期守护才是稀缺能力。聊聊你的产品，我会给出我的技术判断与做法。",
   skillChips: ["C#/.NET", "TypeScript", "Next.js", "AI 原生工作流"],
   homeHref: "/zh",
   langSwitchLabel: "English",

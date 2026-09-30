@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+  <style>
+    .bg { fill: #0f172a; }
+    .fg { fill: #e2e8f0; }
+    .accent { fill: #0369a1; }
+    @media (prefers-color-scheme: dark) {
+      .bg { fill: #f1f5f9; }
+      .fg { fill: #0f172a; }
+      .accent { fill: #38bdf8; }
+    }
+  </style>
+  <rect class="bg" width="64" height="64" rx="12"/>
+  <rect class="accent" x="12" y="46" width="40" height="4" rx="2"/>
+  <text class="fg" x="32" y="40" font-family="ui-monospace, Menlo, Consolas, monospace" font-size="26" font-weight="700" text-anchor="middle">yk</text>
+</svg>

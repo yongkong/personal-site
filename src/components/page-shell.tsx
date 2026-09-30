@@ -8,23 +8,38 @@ export function PageShell({
   subtitle,
   backHref,
   backLabel,
+  eyebrow,
   children,
 }: {
   title: string;
   subtitle?: string;
   backHref?: string;
   backLabel?: string;
+  eyebrow?: string;
   children: React.ReactNode;
 }) {
   return (
     <section className="mx-auto w-full max-w-4xl px-4 py-16">
       {backHref && backLabel && (
-        <Link href={backHref} className="text-sm text-muted-foreground underline-offset-4 hover:underline">
+        <Link
+          href={backHref}
+          className="font-mono text-xs tracking-wider text-muted-foreground underline-offset-4 transition-colors hover:text-brand hover:underline"
+        >
           ← {backLabel}
         </Link>
       )}
-      <h1 className={`${backHref ? "mt-4 " : ""}text-3xl font-semibold tracking-tight`}>{title}</h1>
-      {subtitle && <p className="mt-2 text-muted-foreground">{subtitle}</p>}
+      {eyebrow && (
+        <p className="mt-3 font-mono text-sm font-medium tracking-widest text-brand uppercase">
+          {"// "}
+          {eyebrow}
+        </p>
+      )}
+      <h1
+        className={`${backHref || eyebrow ? "mt-4 " : ""}text-3xl font-semibold tracking-tight text-balance`}
+      >
+        {title}
+      </h1>
+      {subtitle && <p className="mt-3 max-w-2xl text-muted-foreground">{subtitle}</p>}
       {children}
     </section>
   );
