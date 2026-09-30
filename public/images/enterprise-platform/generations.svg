@@ -1,0 +1,55 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 240" font-family="ui-sans-serif, system-ui, 'Microsoft YaHei', sans-serif">
+  <style>
+    .node { fill: #f8fafc; stroke: #cbd5e1; }
+    .nodeHot { fill: #e0f2fe; stroke: #0369a1; stroke-width: 2; }
+    .gen { fill: #94a3b8; font-family: ui-monospace, Menlo, Consolas, monospace; font-size: 11px; font-weight: 700; }
+    .lbl { fill: #0f172a; font-size: 12.5px; font-weight: 600; }
+    .sub { fill: #475569; font-size: 10.5px; }
+    .axis { stroke: #cbd5e1; stroke-width: 3; }
+    .dot { fill: #0369a1; }
+    .zero { fill: #0369a1; font-size: 14px; font-weight: 700; }
+  </style>
+
+  <line class="axis" x1="30" y1="96" x2="870" y2="96"/>
+  <circle class="dot" cx="60" cy="96" r="5"/>
+  <circle class="dot" cx="204" cy="96" r="5"/>
+  <circle class="dot" cx="348" cy="96" r="5"/>
+  <circle class="dot" cx="492" cy="96" r="5"/>
+  <circle class="dot" cx="636" cy="96" r="5"/>
+  <circle class="dot" cx="780" cy="96" r="5"/>
+
+  <g transform="translate(10,24)">
+    <rect class="nodeHot" width="130" height="56" rx="9"/>
+    <text class="gen" x="65" y="20" text-anchor="middle">GEN 1 · 2007 起</text>
+    <text class="lbl" x="65" y="40" text-anchor="middle">VB.NET + WinForms</text>
+  </g>
+  <g transform="translate(154,24)">
+    <rect class="node" width="110" height="56" rx="9"/>
+    <text class="gen" x="55" y="20" text-anchor="middle">GEN 2</text>
+    <text class="lbl" x="55" y="40" text-anchor="middle">Silverlight</text>
+  </g>
+  <g transform="translate(288,24)">
+    <rect class="node" width="120" height="56" rx="9"/>
+    <text class="gen" x="60" y="20" text-anchor="middle">GEN 3</text>
+    <text class="lbl" x="60" y="40" text-anchor="middle">ASP.NET MVC</text>
+  </g>
+  <g transform="translate(426,24)">
+    <rect class="node" width="132" height="56" rx="9"/>
+    <text class="gen" x="66" y="20" text-anchor="middle">GEN 4</text>
+    <text class="lbl" x="66" y="40" text-anchor="middle">AngularJS SPA</text>
+  </g>
+  <g transform="translate(576,24)">
+    <rect class="node" width="140" height="56" rx="9"/>
+    <text class="gen" x="70" y="20" text-anchor="middle">GEN 5</text>
+    <text class="lbl" x="70" y="40" text-anchor="middle">Angular + .NET Core</text>
+  </g>
+  <g transform="translate(730,24)">
+    <rect class="nodeHot" width="140" height="56" rx="9"/>
+    <text class="gen" x="70" y="20" text-anchor="middle">GEN 6 · 至今</text>
+    <text class="lbl" x="70" y="40" text-anchor="middle">.NET 8 微服务</text>
+  </g>
+
+  <text class="zero" x="450" y="150" text-anchor="middle">零推倒重写 —— 每一代都是在线迁移</text>
+  <text class="sub" x="450" y="174" text-anchor="middle">前端换了五张脸，数据引擎纹丝不动；部署从本地服务器走向云</text>
+  <text class="sub" x="450" y="196" text-anchor="middle">长期系统死于被跳过的升级，远多于死于被认真做完的大升级</text>
+</svg>

@@ -1,70 +1,46 @@
 ---
 title: "12 Years on an Enterprise Case-Management Platform"
-description: "Anonymized deep dive: the foundations of a US social-services case-management platform — gateway, auth, data engine — and a ten-million-row replication pipeline, maintained across six platform generations."
+description: "Anonymized deep dive: an application platform built to generate business systems — relational data management, distributed data access, and a ten-million-row replication pipeline — evolving through six technology generations without a single rewrite."
 date: 2026-09-01
 featured: true
 ---
 
 ## Background
 
-A US social-services organization runs a case-management platform whose job
-is direct and humane: register people experiencing homelessness, and
-coordinate the help each of them receives. Every case worker's day moves
-through this system; it is the operational backbone of the agency, not a
-back-office tool.
+The visible product is a case-management system: a US social-services organization uses it to register people experiencing homelessness and coordinate the help they receive — every case worker's day moves through it. But the system worth dissecting is the one underneath: an **application platform built to generate business systems** — relational data management, web-based collaborative processing, seamless access to distributed enterprise data, plus a tightly integrated set of modules and tools for assembling new applications. Case management was its flagship business, and "flexibly meeting each client's special needs" was the reason the platform existed.
 
-I was part of a 20-person development team for twelve years. The numbers I
-can't publish (scale, client specifics) stay unpublished — the architecture
-and the work are what matter here.
+Two constraints ran through all twelve years: business continuity above all (the system does not go down), and naturally distributed data (SQL Server and Oracle coexisting, requiring seamless access).
 
 ## My role
 
-I owned the parts every other module stood on:
+In a 20-person team, I owned the platform's foundations — the layer every business module stands on:
 
-- the gateway layer — reverse proxy (YARP), authentication, and the shared
-  operations libraries every server consumed
-- a unified data-access engine: read, refresh, and update against the data
-  sources behind one interface, so feature teams never wrote raw data code
-- a set of standalone services and their multi-year upgrades: Account
-  Server, Chat Server, Library Server
-- horizontal tooling: data conversion utilities, a short-link service, and
-  database replication tooling
+- **The data-access engine** (the core of the platform's relational data management): read, refresh, and update behind one unified interface, so feature teams never wrote raw data code
+- **Gateway and identity**: reverse proxy (YARP), authentication, and the shared operations libraries every service consumed
+- **Three service domains and their multi-year upgrades**: Account Server, Chat Server, Library Server
+- **Horizontal tooling**: data conversion utilities, a short-link service, database replication tooling
 
-In a team of twenty, "the foundations developer" is a specific kind of
-trust: when your module breaks, everyone's breaks.
+The platform's job was to make business systems quick to assemble and safe to run; my job was to make them all stand on the same foundation. On a team of twenty, "the foundations developer" is a specific kind of trust: when your module breaks, everyone's breaks.
 
 ## Technical decisions
 
-The platform crossed six major generations without a from-scratch rewrite:
-VB.NET and WinForms → Silverlight → ASP.NET MVC → AngularJS SPA → Angular
-+ .NET Core → microservices on .NET 8. The data layer stayed SQL Server
-throughout, accessed via EF and Dapper depending on the workload; deployment
-moved from on-premises servers to cloud. Each generation was a live
-migration, not a greenfield restart — the lesson embedded in every one of
-those upgrades is that long-lived systems die from *skipped* upgrades far
-more often than from big ones done carefully.
+**Six generations, zero rewrites.** From VB.NET + WinForms in 2007, through Silverlight, ASP.NET MVC, AngularJS SPA, and Angular + .NET Core, to today's .NET 8 microservices. The data layer stayed SQL Server throughout (EF and Dapper by workload); deployment moved from on-premises servers to the cloud. Every generation was a live migration, not a greenfield restart — the front end changed its face five times while the data engine never moved, which is what layered lock-in buys:
 
-The work I'm proudest of is the replication pipeline between SQL Server and
-Oracle. Tens of millions of rows, tracked via SQL Server Change Tracking
-and applied to Oracle by a Windows Service on the other side. Early
-versions were slow and occasionally lost data; the final architecture made
-that impossible by construction:
+![Six platform generations](/images/enterprise-platform/generations.svg)
 
-- SQL Server side exposed an API with pre-flight CT health checks and change
-  status queries
-- the Oracle-side Windows Service consumed changes in batches, with batched
-  inserts, structured error tracking, and email alerting when anything
-  drifted
-- every stage was observable, so "is the sync healthy?" was a status query,
-  not an investigation
+The judgment those upgrades distilled: long-lived systems die from *skipped* upgrades far more often than from big ones done carefully.
+
+**The work I'm proudest of: the cross-database replication pipeline.** The platform promised seamless access to distributed enterprise data; the reality was tens of millions of rows syncing SQL Server → Oracle. Early versions were slow and occasionally lost data. The final architecture made loss impossible by construction — Change Tracking captures changes on the SQL Server side, exposed through pre-flight health checks and status-query APIs for batched outbound reads; on the Oracle side, a Windows Service writes transactionally in batches, structured error tracking pinpoints drift to a specific batch, and any drift fires an immediate email alert:
+
+![Replication pipeline architecture](/images/enterprise-platform/replication.svg)
+
+"Is the sync healthy?" went from an investigation to a status query — not a nice-to-have; the difference between whether the person on call sleeps.
 
 ## Outcome
 
-<Stat value="12" label="years, one platform" />
-<Stat value="6" label="platform generations shipped" />
-<Stat value="10M+" label="rows replicated, zero loss" />
+<Stat value="12" label="years · one platform" />
+<Stat value="6" label="generations · zero rewrites" />
+<Stat value="10M+" label="rows cross-DB · zero loss" />
+<Stat value="1" label="data engine · five front-end faces" />
 
-Twelve years, six platform generations, zero rewrites. The replication
-pipeline went from slow-and-lossy to fast and exactly correct at
-tens-of-millions-of-rows scale — and, just as importantly, from "debuggable
-only by the person who wrote it" to "operable by whoever was on call."
+Twelve years, one platform, six technology generations, zero rewrites. What it delivered was more than a case-management system — it was the capability for business systems to change their clothes generation after generation without ever waking the foundation.

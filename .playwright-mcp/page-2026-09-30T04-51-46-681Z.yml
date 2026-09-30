@@ -1,0 +1,83 @@
+- generic [active] [ref=f3e1]:
+  - generic [ref=f3e2]:
+    - banner [ref=f3e3]:
+      - generic [ref=f3e4]:
+        - link "yongkong.dev" [ref=f3e5] [cursor=pointer]:
+          - /url: /zh/
+        - navigation "primary" [ref=f3e6]:
+          - link "案例研究" [ref=f3e7] [cursor=pointer]:
+            - /url: /zh/case-studies/
+          - link "心得" [ref=f3e8] [cursor=pointer]:
+            - /url: /zh/blog/
+          - link "关于" [ref=f3e9] [cursor=pointer]:
+            - /url: /zh/about/
+          - link "联系" [ref=f3e10] [cursor=pointer]:
+            - /url: /zh/contact/
+          - link "English" [ref=f3e11] [cursor=pointer]:
+            - /url: /
+          - button "主题" [ref=f3e12]
+    - main [ref=f3e13]:
+      - generic [ref=f3e14]:
+        - link "← 全部案例研究" [ref=f3e15] [cursor=pointer]:
+          - /url: /zh/case-studies/
+        - heading "12 年企业案件管理平台（匿名）" [level=1] [ref=f3e16]
+        - paragraph [ref=f3e17]: 发布于 2026年9月1日
+        - generic [ref=f3e18]:
+          - heading "背景" [level=2] [ref=f3e19]
+          - paragraph [ref=f3e20]:
+            - text: 这个故事的顶层是一个案件管理系统：美国某社会服务机构用它登记无家可归者、协调他们获得的帮助，每个个案工作者的日常都经过它。但真正值得剖析的是系统脚下的东西——一套
+            - strong [ref=f3e21]: 用来生成业务系统的应用平台
+            - text: ：关系数据管理、基于 Web 的协同处理、分布式企业数据的无缝访问，外加一整套紧密整合的功能模块与工具，用于组装新的应用系统。案件管理是它承载的旗舰业务，而"不同客户的特殊需要能在平台上灵活满足"是它存在的理由。
+          - paragraph [ref=f3e22]: 两条约束贯穿十二年：业务连续性压倒一切（系统不能停）；数据天然分散（SQL Server 与 Oracle 异构并存，必须无缝访问）。
+          - heading "我的角色" [level=2] [ref=f3e23]
+          - paragraph [ref=f3e24]: 20 人团队，我负责平台的地基——所有业务模块脚下踩着的那一层：
+          - list [ref=f3e25]:
+            - listitem [ref=f3e26]:
+              - strong [ref=f3e27]: 数据操作引擎
+              - text: （平台关系数据管理的核心）：读取、刷新、更新数据源收敛到一个统一接口后面，业务团队从不手写裸数据访问代码
+            - listitem [ref=f3e28]:
+              - strong [ref=f3e29]: 网关与身份
+              - text: ：反向代理（YARP）、验证，以及每个服务都要用的公共操作类库
+            - listitem [ref=f3e30]:
+              - strong [ref=f3e31]: 三个服务域及其多年升级
+              - text: ：Account Server、Chat Server、Library Server
+            - listitem [ref=f3e32]:
+              - strong [ref=f3e33]: 横向工具
+              - text: ：数据转换工具、短链接服务、数据库复制工具
+          - paragraph [ref=f3e34]: 平台的目标是让业务系统"生成得快、跑得稳"；我的职责是让这一切站在同一块地基上。在二十人的团队里，"负责地基的开发"是一种特殊的信任：你的模块挂了，所有人的都挂。
+          - heading "技术决策" [level=2] [ref=f3e35]
+          - paragraph [ref=f3e36]:
+            - strong [ref=f3e37]: 六代演进，零推倒重写
+            - text: 。从 2007 年的 VB.NET + WinForms 起，平台跨过 Silverlight、ASP.NET MVC、AngularJS SPA、Angular + .NET Core，走到今天的 .NET 8 微服务；数据层始终是 SQL Server（按负载分别用 EF 与 Dapper），部署从本地服务器走向云。每一代都是在线迁移而非绿地重启——前端的五张脸换过，数据引擎纹丝不动，这是分层锁定的回报：
+          - paragraph [ref=f3e38]:
+            - img "六代平台演进" [ref=f3e39]
+          - paragraph [ref=f3e40]:
+            - text: 这些升级里沉淀的判断是：长期系统死于
+            - strong [ref=f3e41]: 被跳过的
+            - text: 升级，远多于死于被认真做完的大升级。
+          - paragraph [ref=f3e42]:
+            - strong [ref=f3e43]: 我最自豪的工作：跨库复制管线
+            - text: 。平台承诺"分布式企业数据的无缝访问"，而现实是千万行级的 SQL Server → Oracle 同步。早期版本又慢又偶尔丢数据；最终架构让丢数据在构造上不可能——SQL Server 端 Change Tracking 捕获变更，经前置健康检查与状态查询 API 批量出站；Oracle 端 Windows Service 事务化批量写入，结构化错误跟踪定位到批次，任何漂移立即邮件报警：
+          - paragraph [ref=f3e44]:
+            - img "复制管线架构" [ref=f3e45]
+          - paragraph [ref=f3e46]: "\"同步健康吗？\"从一次排查变成一条状态查询——这不是锦上添花，这是值班的人能不能睡觉的区别。"
+          - heading "结果" [level=2] [ref=f3e47]
+          - generic [ref=f3e48]:
+            - generic [ref=f3e49]: "12"
+            - generic [ref=f3e50]: 年 · 一个平台
+          - generic [ref=f3e51]:
+            - generic [ref=f3e52]: "6"
+            - generic [ref=f3e53]: 代演进 · 零推倒重写
+          - generic [ref=f3e54]:
+            - generic [ref=f3e55]: 10M+
+            - generic [ref=f3e56]: 行跨库同步 · 零丢失
+          - generic [ref=f3e57]:
+            - generic [ref=f3e58]: "1"
+            - generic [ref=f3e59]: 个数据引擎 · 前端五换脸
+          - paragraph [ref=f3e60]: 十二年，一个平台，六代技术，零次重写。它交付的不只是一个案件管理系统，而是一种能力：业务系统可以在不惊动地基的前提下，一代一代地换装前行。
+    - contentinfo [ref=f3e61]:
+      - generic [ref=f3e62]:
+        - generic [ref=f3e63]: © 2026 yongkong. 基于 Next.js 构建，静态导出。
+        - link "GitHub" [ref=f3e64] [cursor=pointer]:
+          - /url: https://github.com/yongkong
+  - button "Open Next.js Dev Tools" [ref=f3e70] [cursor=pointer]
