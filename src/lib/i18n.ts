@@ -42,6 +42,7 @@ export type Dictionary = {
   aboutTitle: string;
   aboutBio: string[];
   aboutWorkingStyle: string;
+  aboutPortraitAlt: string;
   aboutStackTitle: string;
   aboutStackGroups: { category: string; items: string[] }[];
   aboutGithubNote: string;
@@ -56,13 +57,13 @@ export type Dictionary = {
 };
 
 const en: Dictionary = {
-  siteTitle: "yongkong — Full-Stack Developer",
+  siteTitle: "yongkong — AI Engineer",
   siteDescription:
-    "Full-stack engineer with 20+ years shipping production systems, delivered through an AI-native workflow. C#/.NET, TypeScript/Next.js. Remote, async-friendly, UTC+8.",
+    "AI engineer with 20+ years shipping production systems, delivered through an AI-native workflow. C#/.NET, TypeScript/Next.js. Remote, async-friendly, UTC+8.",
   positioningLine:
-    "Full-stack engineer with 20+ years shipping production systems — now delivered through an AI-native workflow.",
+    "AI engineer with 20+ years shipping production systems — now delivered through an AI-native workflow.",
   heroSubline: "C#/.NET · TypeScript/Next.js · Remote, async-friendly, UTC+8",
-  heroEyebrow: "Full-stack engineering",
+  heroEyebrow: "AI engineering",
   heroStats: [
     { value: "20+", label: "years shipping production systems" },
     { value: "12", label: "years owning one enterprise platform for a US client" },
@@ -110,10 +111,11 @@ const en: Dictionary = {
   contactHref: "/contact/",
   aboutTitle: "About",
   aboutBio: [
-    "Full-stack engineer with 20+ years shipping systems businesses actually run — twelve of them owning the foundations of an enterprise case-management platform for a US software company, remote from China the whole time. I lead architecture and still write the code.",
+    "AI engineer with 20+ years of full-stack depth, shipping systems businesses actually run — twelve of them owning the foundations of an enterprise case-management platform for a US software company, remote from China the whole time. I lead architecture and still write the code.",
     "Recent years go into putting AI into production: OCR pipelines, deep-learning image analysis, LLM-powered features — delivered through a daily, process-disciplined AI-native workflow.",
   ],
   aboutWorkingStyle: "Remote, async-friendly, UTC+8 — comfortable overlapping US and European hours.",
+  aboutPortraitAlt: "Illustrated portrait of yongkong at his desk",
   aboutStackTitle: "Tech stack",
   aboutStackGroups: [
     {
@@ -172,12 +174,12 @@ const en: Dictionary = {
 };
 
 const zh: Dictionary = {
-  siteTitle: "yongkong — 全栈开发者",
+  siteTitle: "yongkong — AI 工程师",
   siteDescription:
-    "20 余年全栈工程经验，长期维护生产级系统，如今以 AI 原生工作流交付。C#/.NET、TypeScript/Next.js。支持远程与异步协作，UTC+8。",
-  positioningLine: "20 余年全栈工程经验，长期维护生产级系统——如今以 AI 原生工作流交付。",
+    "AI 工程师，20 余年生产级系统交付经验，全栈技术底蕴，以 AI 原生工作流工作。C#/.NET、TypeScript/Next.js。支持远程与异步协作，UTC+8。",
+  positioningLine: "AI 工程师，20 余年生产级系统经验——以 AI 原生工作流交付。",
   heroSubline: "C#/.NET · TypeScript/Next.js · 远程友好 · 异步协作 · UTC+8",
-  heroEyebrow: "全栈工程",
+  heroEyebrow: "AI 工程",
   heroStats: [
     { value: "20+", label: "年生产级系统开发经验" },
     { value: "12", label: "年独立承担美国客户的企业级平台" },
@@ -222,10 +224,11 @@ const zh: Dictionary = {
   contactHref: "/zh/contact/",
   aboutTitle: "关于",
   aboutBio: [
-    "全栈工程师，20 余年生产级系统经验——其中 12 年独立承担一家美国软件公司企业级案件管理平台的底层建设，全程在中国远程。既做架构设计，也亲手写代码。",
+    "AI 工程师，20 余年全栈底蕴、生产级系统经验——其中 12 年独立承担一家美国软件公司企业级案件管理平台的底层建设，全程在中国远程。既做架构设计，也亲手写代码。",
     "近年专注把 AI 做进生产系统：OCR 流水线、深度学习图像分析、LLM 功能——以日常化、流程严谨的 AI 原生工作流交付。",
   ],
   aboutWorkingStyle: "支持远程与异步协作，UTC+8，可与美国/欧洲时区重叠工作。",
+  aboutPortraitAlt: "yongkong 的个人形象插画",
   aboutStackTitle: "技术栈",
   aboutStackGroups: [
     {

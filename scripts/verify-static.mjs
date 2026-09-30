@@ -279,9 +279,11 @@ for (const lang of ["en", "zh"]) {
   check(`${lang} home has og:title`, home.includes('property="og:title"'));
   check(
     `${lang} home og:title carries language copy`,
-    lang === "en" ? home.includes("Full-Stack Developer") : home.includes("全栈开发者"),
+    lang === "en" ? home.includes("AI Engineer") : home.includes("AI 工程师"),
   );
   check(`${lang} home has og:image`, home.includes('property="og:image"'));
+  const about = read(`${langRoot(lang)}about/index.html`);
+  check(`${lang} about carries the portrait image`, !!about && about.includes("/images/portrait.png"));
   const post = blogMeta(lang)[0];
   const postHtml = post ? read(`${langRoot(lang)}blog/${post.slug}/index.html`) : null;
   if (postHtml && post) {

@@ -12,16 +12,25 @@ export function AboutPage({ lang }: { lang: Lang }) {
 
   return (
     <PageShell title={dict.aboutTitle} eyebrow={dict.heroEyebrow}>
-      <div className="mt-6 max-w-2xl text-lg leading-relaxed">
-        {dict.aboutBio.map((paragraph, index) => (
-          <p key={index} className={index > 0 ? "mt-4" : undefined}>
-            {paragraph}
+      <div className="mt-6 flex flex-col-reverse gap-6 sm:flex-row sm:gap-10">
+        <div className="max-w-2xl text-lg leading-relaxed">
+          {dict.aboutBio.map((paragraph, index) => (
+            <p key={index} className={index > 0 ? "mt-4" : undefined}>
+              {paragraph}
+            </p>
+          ))}
+          <p className="mt-4 border-l-2 border-brand pl-4 text-muted-foreground">
+            {dict.aboutWorkingStyle}
           </p>
-        ))}
+        </div>
+        <img
+          src="/images/portrait.png"
+          alt={dict.aboutPortraitAlt}
+          width={640}
+          height={640}
+          className="w-40 shrink-0 self-start rounded-xl border border-border bg-card p-1.5 sm:w-48"
+        />
       </div>
-      <p className="mt-4 max-w-2xl border-l-2 border-brand pl-4 text-muted-foreground">
-        {dict.aboutWorkingStyle}
-      </p>
       <dl className="mt-12 grid grid-cols-2 gap-x-6 gap-y-6 border-t border-border pt-8 sm:grid-cols-4">
         {dict.heroStats.map((stat) => (
           <div key={stat.value} className="flex flex-col gap-1">
