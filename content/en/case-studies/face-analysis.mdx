@@ -1,0 +1,44 @@
+---
+title: "Face Shape and Color Analysis Mini-Program, in One Month (Privacy-First)"
+description: "On-device feature extraction (photos never leave the phone), algorithmic analysis, and a complete paid-report funnel with coaching referral — from frozen requirements to launch checklist, solo, in one month."
+date: 2026-09-24
+featured: true
+---
+
+## Background
+
+A client needed a WeChat mini-program: users take selfies, the app analyzes their **face shape** and **personal color season**, generates a paid beauty report (with PDF download), and funnels high-intent users toward offline makeup coaching. Two constraints were fixed from day one:
+
+1. **Privacy** — face photos must never be uploaded. Not a compliance nicety; the product's license to exist
+2. **Schedule** — one month from frozen requirements to launch
+
+![Mini-program homepage](/images/face-analysis/home.png)
+
+## My role
+
+Solo, full-stack delivery: requirements freeze and specs, system architecture, algorithm adapters, front end and back end, the test suite, and the handover kit — technical design, testing guide, on-device regression checklist, and a client-facing launch checklist are all deliverables. ~26k lines: 9.3k back end (Python/FastAPI) + 16.4k front end (uniapp/Vue3/TS).
+
+## Technical decisions
+
+The **privacy-first pipeline** is the foundation. `wx.faceDetect` extracts 106 landmarks and 3-zone skin RGB **on the device**; what crosses the network is a feature payload under 1 KB, and temp files are wiped immediately. The backend API's schema **physically rejects** base64/URL image fields — not "we promise not to send photos"; sending them is impossible.
+
+![Privacy data pipeline](/images/face-analysis/pipeline.svg)
+
+**Algorithms sit behind adapter interfaces** (face shape / skin tone / recommendation independently replaceable): 36 landmarks match 7 face-shape templates plus classical proportion checks; 9 profile points yield nose projection and facial convexity — a "contour depth" shown only as high/mid/low per the client's call that raw scores feel too sensitive; 3-zone RGB goes through IQR outlier removal into HSV/Lab for the four-season color typing.
+
+**The commercial loop shipped complete**:
+
+![Paid report funnel](/images/face-analysis/loop.svg)
+
+Engineering calls worth noting: a `MOCK_WECHAT` switch makes login/pay/refund run end-to-end locally without WeChat credentials, with zero front-end change when flipped to the real chain; PDFs render via WeasyPrint with an automatic fallback to pure-Python fpdf2 when Pango is missing; and the admin console edits content as configuration — the client's 0903 content revision (copy red-lines, section changes) shipped **without a single code change**.
+
+**Content rules treated as engineering constraints**: we froze a copy red-line with the client (no negative appearance wording; ratio data always framed positively), copy frozen at analysis time, old reports never retroactively rewritten — all captured in a domain glossary so "how we speak" and "how we code" share one source of truth.
+
+## Outcome
+
+<Stat value="1" label="month, frozen requirements to launch checklist" />
+<Stat value="<1KB" label="payload — photos never leave the device" />
+<Stat value="178" label="pytest cases + black-box E2E" />
+<Stat value="¥19.9" label="unlocks the 8-section report, refundable" />
+
+One month, one person, a complete loop: the privacy promise is enforced by architecture, not policy; the E2E black-box suite runs against the live server and catches deploy drift ("code updated, process not restarted"); the client iterates content through configuration instead of releases. 65 commits, 2026-08-24 to 09-24.
