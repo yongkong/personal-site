@@ -54,7 +54,7 @@ export function AboutPage({ lang }: { lang: Lang }) {
         href={siteConfig.github}
         target="_blank"
         rel="noopener noreferrer"
-        className="group mt-12 flex w-fit items-center gap-2.5 rounded-lg border border-border bg-card px-4 py-3 text-sm text-muted-foreground transition-colors hover:border-brand/60 hover:text-foreground"
+        className="group mt-12 flex w-fit flex-wrap items-center gap-x-2.5 gap-y-1 rounded-lg border border-border bg-card px-4 py-3 text-sm text-muted-foreground transition-colors hover:border-brand/60 hover:text-foreground"
       >
         <GithubMark className="size-4 shrink-0" />
         <span>{dict.aboutGithubNote}</span>
