@@ -1,3 +1,7 @@
+import Link from "next/link";
+import { ArrowRight } from "lucide-react";
+
+import { Button } from "@/components/ui/button";
 import { GithubMark } from "@/components/github-mark";
 import { PageShell } from "@/components/page-shell";
 import { getDictionary, type Lang } from "@/lib/i18n";
@@ -8,7 +12,13 @@ export function AboutPage({ lang }: { lang: Lang }) {
 
   return (
     <PageShell title={dict.aboutTitle} eyebrow={dict.heroEyebrow}>
-      <p className="mt-6 max-w-2xl text-lg leading-relaxed">{dict.aboutBio}</p>
+      <div className="mt-6 max-w-2xl text-lg leading-relaxed">
+        {dict.aboutBio.map((paragraph, index) => (
+          <p key={index} className={index > 0 ? "mt-4" : undefined}>
+            {paragraph}
+          </p>
+        ))}
+      </div>
       <p className="mt-4 max-w-2xl border-l-2 border-brand pl-4 text-muted-foreground">
         {dict.aboutWorkingStyle}
       </p>
@@ -60,6 +70,32 @@ export function AboutPage({ lang }: { lang: Lang }) {
         <span>{dict.aboutGithubNote}</span>
         <span className="font-mono text-brand">github.com/yongkong →</span>
       </a>
+
+      <section aria-labelledby="about-cta" className="mt-12">
+        <div className="relative overflow-hidden rounded-xl border border-border bg-card p-8">
+          <div
+            aria-hidden="true"
+            className="bg-blueprint absolute inset-0 [mask-image:radial-gradient(ellipse_80%_100%_at_100%_0%,black_10%,transparent_70%)]"
+          />
+          <div className="relative flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
+            <div className="max-w-xl">
+              <h2 id="about-cta" className="text-2xl font-semibold tracking-tight text-balance">
+                {dict.closingCtaTitle}
+              </h2>
+              <p className="mt-3 text-muted-foreground">{dict.closingCtaSubtitle}</p>
+            </div>
+            <Button
+              size="lg"
+              className="w-fit px-5"
+              render={<Link href={dict.contactHref} />}
+              nativeButton={false}
+            >
+              {dict.ctaLabel}
+              <ArrowRight aria-hidden="true" data-icon="inline-end" />
+            </Button>
+          </div>
+        </div>
+      </section>
     </PageShell>
   );
 }

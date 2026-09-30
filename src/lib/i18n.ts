@@ -40,7 +40,7 @@ export type Dictionary = {
   contactLabel: string;
   contactHref: string;
   aboutTitle: string;
-  aboutBio: string;
+  aboutBio: string[];
   aboutWorkingStyle: string;
   aboutStackTitle: string;
   aboutStackGroups: { category: string; items: string[] }[];
@@ -109,8 +109,10 @@ const en: Dictionary = {
   contactLabel: "Contact",
   contactHref: "/contact/",
   aboutTitle: "About",
-  aboutBio:
-    "Full-stack engineer with 20+ years shipping systems businesses actually run — twelve of them owning the foundations of an enterprise case-management platform for a US software company, remote from China the whole time. I lead architecture and still write the code; recent years go into putting AI into production: OCR pipelines, deep-learning image analysis, LLM-powered features.",
+  aboutBio: [
+    "Full-stack engineer with 20+ years shipping systems businesses actually run — twelve of them owning the foundations of an enterprise case-management platform for a US software company, remote from China the whole time. I lead architecture and still write the code.",
+    "Recent years go into putting AI into production: OCR pipelines, deep-learning image analysis, LLM-powered features — delivered through a daily, process-disciplined AI-native workflow.",
+  ],
   aboutWorkingStyle: "Remote, async-friendly, UTC+8 — comfortable overlapping US and European hours.",
   aboutStackTitle: "Tech stack",
   aboutStackGroups: [
@@ -219,8 +221,10 @@ const zh: Dictionary = {
   contactLabel: "联系",
   contactHref: "/zh/contact/",
   aboutTitle: "关于",
-  aboutBio:
-    "全栈工程师，20 余年生产级系统经验——其中 12 年独立承担一家美国软件公司企业级案件管理平台的底层建设，全程在中国远程。既做架构设计，也亲手写代码；近年专注把 AI 做进生产系统：OCR 流水线、深度学习图像分析、LLM 功能。",
+  aboutBio: [
+    "全栈工程师，20 余年生产级系统经验——其中 12 年独立承担一家美国软件公司企业级案件管理平台的底层建设，全程在中国远程。既做架构设计，也亲手写代码。",
+    "近年专注把 AI 做进生产系统：OCR 流水线、深度学习图像分析、LLM 功能——以日常化、流程严谨的 AI 原生工作流交付。",
+  ],
   aboutWorkingStyle: "支持远程与异步协作，UTC+8，可与美国/欧洲时区重叠工作。",
   aboutStackTitle: "技术栈",
   aboutStackGroups: [
