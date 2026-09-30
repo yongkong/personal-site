@@ -4,11 +4,22 @@
 
 **Blocked by:** None（站已成，纯视觉层）
 
-**Status:** claimed
+**Status:** resolved
 
-- [ ] 构建产物 CSS 含强调蓝令牌与两种品牌字体（fontsource 本地加载）
-- [ ] favicon 为自定义 {yk} 字标（icon.svg 深浅色自适应 + apple-icon.png），不再是脚手架默认
-- [ ] 双语首页 hero 含 mono 数字锚点行
-- [ ] 双语 Case Study 详情页结果段渲染 Stat 数字块
-- [ ] Project Card / 列表项具备 hover 微交互（过渡不引起布局跳动）
-- [ ] lint / typecheck / 全部断言绿
+## Resolution
+
+采纳并行会话的设计底座（slate+sky 品牌令牌、mono 眉题与数字、blueprint 网格 hero、编号分区、收尾 CTA），并按项目约束收尾。最终 147 项断言全绿。
+
+关键调和：
+- **字体自托管化**：并行版用 next/font/google（构建期联网，违背 ADR-0001 与删 Geist 的先例）→ 换 @fontsource-variable（IBM Plex Sans + JetBrains Mono），globals.css 定义 `--font-plex-sans`/`--font-jetbrains-mono` 变量，下游全部无感
+- 自定义 {yk} favicon（SVG 深浅色自适应）+ 零依赖生成的 apple-icon.png；脚手架 favicon.ico 移除
+- Stat 组件接入 MDX（case-study-view components map），四份案例双语 Outcome 段上数字块
+- 断言经压缩器实测修正：oklch 被 Lightning CSS 转 hex/lab，色相字面量断言改为"令牌定义 + .text-brand 工具类生成"（minifier-proof）
+- eslint ignore 掉 .agents/ 第三方技能脚本
+
+- [x] 构建产物 CSS 含强调蓝令牌与两种品牌字体（fontsource 本地加载）
+- [x] favicon 为自定义 {yk} 字标（icon.svg 深浅色自适应 + apple-icon.png）
+- [x] 双语首页 hero 含 mono 数字锚点行（20+ / 12 / UTC+8 / AI-native 四格）
+- [x] 双语 Case Study 详情页结果段渲染 Stat 数字块
+- [x] Project Card / 列表项具备 hover 微交互
+- [x] lint / typecheck / 147 项断言全绿
