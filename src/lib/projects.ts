@@ -11,12 +11,12 @@ export type ProjectCardData = {
 // shows as Project Cards. Adding a card = adding an entry here.
 export const PROJECTS: ProjectCardData[] = [
   {
-    name: "phonic-learn",
-    url: "https://github.com/yongkong/phonic-learn",
+    name: "learn-mattpocock-skills",
+    url: "https://github.com/yongkong/learn-mattpocock-skills",
     stack: ["Next.js", "TypeScript", "MDX"],
     description: {
-      en: "Bilingual course site teaching AI-native workflows — built solo in three days.",
-      zh: "讲授 AI 原生工作流的双语课程站——3 天独立建成。",
+      en: "Bilingual course site teaching AI-native workflows — built solo in a week.",
+      zh: "讲授 AI 原生工作流的双语课程站——一周独立建成。",
     },
   },
   {
