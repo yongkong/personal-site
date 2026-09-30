@@ -1,0 +1,12 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "yongkong",
+  "compatibility_date": "2026-09-30",
+  // Static asset deployment (ADR-0001: no server runtime). wrangler picks
+  // this config up during the Cloudflare build and uploads out/ as-is,
+  // skipping its Next.js/OpenNext framework detection.
+  "assets": {
+    "directory": "./out",
+    "not_found_handling": "404-page"
+  }
+}
