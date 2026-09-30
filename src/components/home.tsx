@@ -2,11 +2,13 @@ import Link from "next/link";
 import { ArrowRight, ArrowUpRight } from "lucide-react";
 
 import { DraftChip } from "@/components/draft-chip";
+import { GithubMark } from "@/components/github-mark";
 import { Button } from "@/components/ui/button";
 import { getBlogPosts, getCaseStudies } from "@/lib/content";
 import { formatDate } from "@/lib/dates";
 import { getDictionary, type Lang } from "@/lib/i18n";
 import { PROJECTS } from "@/lib/projects";
+import { siteConfig } from "@/lib/site-config";
 
 const sectionClass = "mx-auto w-full max-w-4xl px-4 pt-16";
 
@@ -92,6 +94,15 @@ export function Home({ lang }: { lang: Lang }) {
             >
               {dict.secondaryCtaLabel} →
             </Link>
+            <a
+              href={siteConfig.github}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex items-center gap-1.5 font-mono text-sm text-muted-foreground underline-offset-4 transition-colors hover:text-brand hover:underline"
+            >
+              <GithubMark className="size-3.5" />
+              {dict.githubLabel} →
+            </a>
           </div>
           <dl className="mt-8 grid grid-cols-2 gap-x-6 gap-y-6 border-t border-border pt-8 sm:grid-cols-4">
             {dict.heroStats.map((stat) => (
@@ -178,7 +189,12 @@ export function Home({ lang }: { lang: Lang }) {
       </section>
 
       <section className={sectionClass}>
-        <SectionHeader num="03" title={dict.projectsLabel} />
+        <SectionHeader
+          num="03"
+          title={dict.projectsLabel}
+          viewAllHref={siteConfig.github}
+          viewAllLabel={dict.githubLabel}
+        />
         <ul className="mt-6 grid gap-4 pb-16 sm:grid-cols-2 lg:grid-cols-3">
           {PROJECTS.map((project) => (
             <li key={project.name}>

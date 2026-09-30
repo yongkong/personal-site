@@ -42,6 +42,9 @@ export type Dictionary = {
   aboutTitle: string;
   aboutBio: string;
   aboutWorkingStyle: string;
+  aboutStackTitle: string;
+  aboutStackGroups: { category: string; items: string[] }[];
+  aboutGithubNote: string;
   contactTitle: string;
   contactSubtitle: string;
   emailLabel: string;
@@ -70,7 +73,16 @@ const en: Dictionary = {
   closingCtaTitle: "Have a system to build — or to keep alive for the next decade?",
   closingCtaSubtitle:
     "Long-term ownership is the rare part. Tell me about your product and I'll tell you how I'd approach it.",
-  skillChips: ["C#/.NET", "TypeScript", "Next.js", "AI-native workflow"],
+  skillChips: [
+    "C#/.NET",
+    "ASP.NET Core",
+    "Angular · Vue",
+    "TypeScript/Next.js",
+    "Python · Java · PHP",
+    "SQL Server",
+    "OCR / ML",
+    "AI-native workflow",
+  ],
   homeHref: "/",
   langSwitchLabel: "中文",
   langSwitchHref: "/zh",
@@ -98,8 +110,55 @@ const en: Dictionary = {
   contactHref: "/contact/",
   aboutTitle: "About",
   aboutBio:
-    "[PLACEHOLDER — full narrative arrives with the launch content pass.] In short: 20+ years of full-stack engineering, 12 of them owning an enterprise case-management platform for a US client — now delivering through an AI-native workflow.",
+    "Full-stack engineer with 20+ years shipping systems businesses actually run — twelve of them owning the foundations of an enterprise case-management platform for a US software company, remote from China the whole time. I lead architecture and still write the code; recent years go into putting AI into production: OCR pipelines, deep-learning image analysis, LLM-powered features.",
   aboutWorkingStyle: "Remote, async-friendly, UTC+8 — comfortable overlapping US and European hours.",
+  aboutStackTitle: "Tech stack",
+  aboutStackGroups: [
+    {
+      category: "Backend",
+      items: [
+        "C# / ASP.NET Core",
+        ".NET Framework → .NET 8",
+        "Java · Python · PHP",
+        "REST APIs · Entity Framework · Dapper",
+      ],
+    },
+    {
+      category: "Frontend",
+      items: [
+        "Angular — since the AngularJS era",
+        "Vue · TypeScript",
+        "Next.js / React",
+        "Tailwind CSS · MDX",
+      ],
+    },
+    {
+      category: "AI & machine learning",
+      items: [
+        "OCR pipelines in production",
+        "Deep-learning image classification & grading",
+        "LLM-powered features",
+        "Daily AI coding agents, process-disciplined",
+      ],
+    },
+    {
+      category: "Data",
+      items: [
+        "SQL Server — 12+ years, tens-of-millions rows",
+        "Oracle alongside SQL Server",
+        "Batch & replication pipelines",
+      ],
+    },
+    {
+      category: "Mobile & desktop",
+      items: [
+        "WeChat Mini Programs — uniapp · Vue 3",
+        "Windows desktop — Delphi → .NET",
+      ],
+    },
+  ],
+  aboutGithubNote:
+    "Code, specs, and the issue trails behind my work live in the open — browse them on GitHub.",
   contactTitle: "Contact",
   contactSubtitle: "The fastest way to start a conversation.",
   emailLabel: "Email",
@@ -126,7 +185,16 @@ const zh: Dictionary = {
   secondaryCtaLabel: "查看案例研究",
   closingCtaTitle: "有系统要构建——还是要让它再稳定运行十年？",
   closingCtaSubtitle: "长期守护才是稀缺能力。聊聊你的产品，我会给出我的技术判断与做法。",
-  skillChips: ["C#/.NET", "TypeScript", "Next.js", "AI 原生工作流"],
+  skillChips: [
+    "C#/.NET",
+    "ASP.NET Core",
+    "Angular · Vue",
+    "TypeScript/Next.js",
+    "Python · Java · PHP",
+    "SQL Server",
+    "OCR / 机器学习",
+    "AI 原生工作流",
+  ],
   homeHref: "/zh",
   langSwitchLabel: "English",
   langSwitchHref: "/",
@@ -152,8 +220,54 @@ const zh: Dictionary = {
   contactHref: "/zh/contact/",
   aboutTitle: "关于",
   aboutBio:
-    "【占位——完整履历随上线内容批次补充。】简版：20 余年全栈工程经验，其中 12 年独立承担美国客户的企业级案件管理平台——如今以 AI 原生工作流交付。",
+    "全栈工程师，20 余年生产级系统经验——其中 12 年独立承担一家美国软件公司企业级案件管理平台的底层建设，全程在中国远程。既做架构设计，也亲手写代码；近年专注把 AI 做进生产系统：OCR 流水线、深度学习图像分析、LLM 功能。",
   aboutWorkingStyle: "支持远程与异步协作，UTC+8，可与美国/欧洲时区重叠工作。",
+  aboutStackTitle: "技术栈",
+  aboutStackGroups: [
+    {
+      category: "后端",
+      items: [
+        "C# / ASP.NET Core",
+        ".NET Framework → .NET 8",
+        "Java · Python · PHP",
+        "REST API · Entity Framework · Dapper",
+      ],
+    },
+    {
+      category: "前端",
+      items: [
+        "Angular——从 AngularJS 时代至今",
+        "Vue · TypeScript",
+        "Next.js / React",
+        "Tailwind CSS · MDX",
+      ],
+    },
+    {
+      category: "AI 与机器学习",
+      items: [
+        "生产环境 OCR 流水线",
+        "深度学习图像分类与自动评级",
+        "LLM 功能集成",
+        "日常使用 AI 编码代理，流程严谨",
+      ],
+    },
+    {
+      category: "数据",
+      items: [
+        "SQL Server——12 年以上，千万行级",
+        "SQL Server 与 Oracle 共存架构",
+        "批处理与数据复制管道",
+      ],
+    },
+    {
+      category: "移动与桌面",
+      items: [
+        "微信小程序——uniapp · Vue 3",
+        "Windows 桌面——Delphi → .NET",
+      ],
+    },
+  ],
+  aboutGithubNote: "代码、规格与问题追踪大多公开——欢迎到 GitHub 上查验。",
   contactTitle: "联系",
   contactSubtitle: "最快开始交流的方式。",
   emailLabel: "邮箱",

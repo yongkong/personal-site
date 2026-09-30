@@ -1,5 +1,6 @@
 import Link from "next/link";
 
+import { GithubMark } from "@/components/github-mark";
 import { ThemeToggle } from "@/components/theme-toggle";
 import { getDictionary, type Lang } from "@/lib/i18n";
 import { siteConfig } from "@/lib/site-config";
@@ -39,6 +40,15 @@ export function SiteHeader({ lang }: { lang: Lang }) {
           >
             {dict.aboutLabel}
           </Link>
+          <a
+            href={siteConfig.github}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="flex items-center gap-1.5 rounded-md px-2 py-1.5 text-sm whitespace-nowrap text-muted-foreground transition-colors hover:text-foreground"
+          >
+            <GithubMark className="size-3.5" />
+            {dict.githubLabel}
+          </a>
           <Link
             href={dict.contactHref}
             className="rounded-md border border-border px-2.5 py-1.5 text-sm whitespace-nowrap transition-colors hover:border-brand/60 hover:text-brand"
