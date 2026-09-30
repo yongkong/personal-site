@@ -1,0 +1,43 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 250" font-family="ui-sans-serif, system-ui, 'Microsoft YaHei', sans-serif">
+  <style>
+    .free { fill: #f1f5f9; stroke: #cbd5e1; }
+    .paid { fill: #e0f2fe; stroke: #0369a1; stroke-width: 2; }
+    .name { fill: #0f172a; font-size: 13px; font-weight: 600; }
+    .hdr { fill: #0369a1; font-size: 15px; font-weight: 700; }
+    .sub { fill: #475569; font-size: 11px; }
+    .tag { font-family: ui-monospace, Menlo, Consolas, monospace; font-size: 11px; font-weight: 700; }
+  </style>
+
+  <text class="hdr" x="20" y="34">免费 · 3 项</text>
+  <rect class="free" x="20" y="48" width="240" height="42" rx="8"/>
+  <text class="name" x="34" y="74">季型名 / 脸型名 / 一句配色建议</text>
+
+  <text class="hdr" x="320" y="34">解锁 ¥19.9 · 完整 8 板块</text>
+
+  <rect class="paid" x="320" y="48" width="270" height="42" rx="8"/>
+  <text class="name" x="334" y="74">① 一句话总评（分享卡）</text>
+
+  <rect class="paid" x="320" y="96" width="270" height="42" rx="8"/>
+  <text class="name" x="334" y="122">② 脸型结论 + 化妆重点</text>
+
+  <rect class="paid" x="320" y="144" width="270" height="42" rx="8"/>
+  <text class="name" x="334" y="170">③ 面部比例特征（正向解读）</text>
+
+  <rect class="paid" x="620" y="48" width="270" height="42" rx="8"/>
+  <text class="name" x="634" y="74">④ 专属色系（文字版 用色建议）</text>
+
+  <rect class="paid" x="620" y="96" width="270" height="42" rx="8"/>
+  <text class="name" x="634" y="122">⑤ 季型分析图（四季其一）</text>
+
+  <rect class="paid" x="620" y="144" width="270" height="42" rx="8"/>
+  <text class="name" x="634" y="170">⑥ 行动清单</text>
+
+  <rect class="paid" x="320" y="192" width="270" height="42" rx="8"/>
+  <text class="name" x="334" y="218">⑦ 风格参照（脸型示意 × 妆容）</text>
+
+  <rect class="paid" x="620" y="192" width="270" height="42" rx="8"/>
+  <text class="name" x="634" y="218">⑧ 私教引流卡 + 免责声明</text>
+
+  <text class="sub tag" x="20" y="228">报告文案落库于分析时</text>
+  <text class="sub tag" x="20" y="246">PDF 同款排版可下载</text>
+</svg>

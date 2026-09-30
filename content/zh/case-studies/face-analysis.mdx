@@ -12,7 +12,7 @@ featured: true
 1. **隐私**——人脸照片绝不能上传服务器。这不是合规加分项，是产品能不能做的底线
 2. **窗口**——一个月内从需求冻结走到上线
 
-![小程序首页](/images/face-analysis/home.png)
+![产品结构：首页 · 拍照分析 · 报告](/images/face-analysis/product.svg)
 
 ## 我的角色
 
@@ -29,6 +29,10 @@ featured: true
 **商业闭环一步到位**：
 
 ![付费与引流闭环](/images/face-analysis/loop.svg)
+
+免费版只给 3 项钩子，¥19.9 解锁完整八板块报告（PDF 同款排版可下载），末尾落到私教预约：
+
+![报告八板块结构](/images/face-analysis/report-sections.svg)
 
 工程上几个值得说的决定：`MOCK_WECHAT` 开关让登录/支付/退款在无微信凭证的本地全自动跑通，切真实链路前端无感；PDF 排版用 WeasyPrint、缺 Pango 运行库时自动降级 fpdf2 纯 Python 绘制；管理端在线改配置——甲方 0903 版内容迭代（文案红线、板块调整）**没有改一行代码**。
 

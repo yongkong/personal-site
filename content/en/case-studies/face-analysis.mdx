@@ -12,7 +12,7 @@ A client needed a WeChat mini-program: users take selfies, the app analyzes thei
 1. **Privacy** — face photos must never be uploaded. Not a compliance nicety; the product's license to exist
 2. **Schedule** — one month from frozen requirements to launch
 
-![Mini-program homepage](/images/face-analysis/home.png)
+![Product structure: home · capture · report](/images/face-analysis/product.svg)
 
 ## My role
 
@@ -29,6 +29,10 @@ The **privacy-first pipeline** is the foundation. `wx.faceDetect` extracts 106 l
 **The commercial loop shipped complete**:
 
 ![Paid report funnel](/images/face-analysis/loop.svg)
+
+The free tier is a 3-item hook; ¥19.9 unlocks the full eight-section report (same layout as the downloadable PDF), ending in the coaching referral:
+
+![Report section map](/images/face-analysis/report-sections.svg)
 
 Engineering calls worth noting: a `MOCK_WECHAT` switch makes login/pay/refund run end-to-end locally without WeChat credentials, with zero front-end change when flipped to the real chain; PDFs render via WeasyPrint with an automatic fallback to pure-Python fpdf2 when Pango is missing; and the admin console edits content as configuration — the client's 0903 content revision (copy red-lines, section changes) shipped **without a single code change**.
 

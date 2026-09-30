@@ -1,0 +1,67 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 330" font-family="ui-sans-serif, system-ui, 'Microsoft YaHei', sans-serif">
+  <style>
+    .frame { fill: #ffffff; stroke: #cbd5e1; stroke-width: 2; }
+    .cap { fill: #475569; font-size: 13px; font-weight: 600; }
+    .bar { fill: #0f172a; }
+    .hero { fill: #e0f2fe; }
+    .heroTx { fill: #0369a1; font-weight: 700; }
+    .cell { fill: #f1f5f9; }
+    .cellTx { fill: #334155; font-size: 12px; }
+    .cta { fill: #0369a1; }
+    .ctaTx { fill: #ffffff; font-size: 13px; font-weight: 700; }
+    .dim { fill: #94a3b8; font-size: 10px; }
+  </style>
+
+  <!-- phone 1: index -->
+  <g transform="translate(30,20)">
+    <rect class="frame" x="0" y="0" width="200" height="270" rx="18"/>
+    <rect class="bar" x="0" y="0" width="200" height="30" rx="18"/>
+    <rect class="bar" x="0" y="18" width="200" height="12"/>
+    <text class="cap" x="100" y="20" text-anchor="middle" fill="#e2e8f0">首页</text>
+    <rect class="hero" x="16" y="44" width="168" height="64" rx="10"/>
+    <text class="heroTx" x="100" y="72" text-anchor="middle" font-size="14">脸型 · 色彩季型</text>
+    <text class="heroTx" x="100" y="92" text-anchor="middle" font-size="14">AI 分析</text>
+    <rect class="cell" x="16" y="120" width="80" height="44" rx="8"/>
+    <text class="cellTx" x="56" y="140" text-anchor="middle">拍照分析</text>
+    <rect class="cell" x="104" y="120" width="80" height="44" rx="8"/>
+    <text class="cellTx" x="144" y="140" text-anchor="middle">概念科普</text>
+    <rect class="cell" x="16" y="172" width="80" height="44" rx="8"/>
+    <text class="cellTx" x="56" y="192" text-anchor="middle">我的订单</text>
+    <rect class="cell" x="104" y="172" width="80" height="44" rx="8"/>
+    <text class="cellTx" x="144" y="192" text-anchor="middle">隐私说明</text>
+    <text class="dim" x="100" y="248" text-anchor="middle">9+ 页面 · Vue3 + uniapp</text>
+  </g>
+
+  <!-- phone 2: camera + analysis flow -->
+  <g transform="translate(350,20)">
+    <rect class="frame" x="0" y="0" width="200" height="270" rx="18"/>
+    <rect class="bar" x="0" y="0" width="200" height="30" rx="18"/>
+    <rect class="bar" x="0" y="18" width="200" height="12"/>
+    <text class="cap" x="100" y="20" text-anchor="middle" fill="#e2e8f0">拍照 · 端侧分析</text>
+    <circle cx="100" cy="105" r="42" fill="none" stroke="#0369a1" stroke-width="2.5" stroke-dasharray="6 5"/>
+    <text class="heroTx" x="100" y="100" text-anchor="middle" font-size="12">正脸 + 侧脸</text>
+    <text class="dim" x="100" y="118" text-anchor="middle">106 关键点 · 端侧提取</text>
+    <rect class="cta" x="30" y="170" width="140" height="34" rx="17"/>
+    <text class="ctaTx" x="100" y="191" text-anchor="middle">开始分析</text>
+    <text class="dim" x="100" y="248" text-anchor="middle">特征 &lt;1KB 上报 · 照片不出设备</text>
+  </g>
+
+  <!-- phone 3: report -->
+  <g transform="translate(670,20)">
+    <rect class="frame" x="0" y="0" width="200" height="270" rx="18"/>
+    <rect class="bar" x="0" y="0" width="200" height="30" rx="18"/>
+    <rect class="bar" x="0" y="18" width="200" height="12"/>
+    <text class="cap" x="100" y="20" text-anchor="middle" fill="#e2e8f0">报告 · PDF</text>
+    <rect class="hero" x="16" y="44" width="168" height="34" rx="8"/>
+    <text class="heroTx" x="100" y="66" text-anchor="middle" font-size="12">总评卡：季型 · 脸型 · 风格</text>
+    <rect class="cell" x="16" y="86" width="168" height="26" rx="6"/>
+    <text class="cellTx" x="100" y="103" text-anchor="middle">脸型结论 · 三庭五眼比例</text>
+    <rect class="cell" x="16" y="118" width="168" height="26" rx="6"/>
+    <text class="cellTx" x="100" y="135" text-anchor="middle">专属色系 · 行动清单</text>
+    <rect class="cell" x="16" y="150" width="168" height="26" rx="6"/>
+    <text class="cellTx" x="100" y="167" text-anchor="middle">风格参照 · 免责声明</text>
+    <rect class="cta" x="16" y="188" width="168" height="30" rx="15"/>
+    <text class="ctaTx" x="100" y="207" text-anchor="middle" font-size="11">预约一对一私教（引流 CTA）</text>
+    <text class="dim" x="100" y="248" text-anchor="middle">¥19.9 解锁 8 板块 · 可退款</text>
+  </g>
+</svg>

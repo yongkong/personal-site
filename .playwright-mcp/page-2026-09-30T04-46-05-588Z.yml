@@ -1,0 +1,95 @@
+- generic [active] [ref=e1]:
+  - generic [ref=e2]:
+    - banner [ref=e3]:
+      - generic [ref=e4]:
+        - link "yongkong.dev" [ref=e5] [cursor=pointer]:
+          - /url: /zh/
+        - navigation "primary" [ref=e6]:
+          - link "案例研究" [ref=e7] [cursor=pointer]:
+            - /url: /zh/case-studies/
+          - link "心得" [ref=e8] [cursor=pointer]:
+            - /url: /zh/blog/
+          - link "关于" [ref=e9] [cursor=pointer]:
+            - /url: /zh/about/
+          - link "联系" [ref=e10] [cursor=pointer]:
+            - /url: /zh/contact/
+          - link "English" [ref=e11] [cursor=pointer]:
+            - /url: /
+          - button "主题" [ref=e12]
+    - main [ref=e13]:
+      - generic [ref=e14]:
+        - link "← 全部案例研究" [ref=e15] [cursor=pointer]:
+          - /url: /zh/case-studies/
+        - heading "一个月交付：人脸型与色彩分析小程序（隐私优先）" [level=1] [ref=e16]
+        - paragraph [ref=e17]: 发布于 2026年9月24日
+        - generic [ref=e18]:
+          - heading "背景" [level=2] [ref=e19]
+          - paragraph [ref=e20]:
+            - text: 客户需要一款微信小程序：用户拍照后分析
+            - strong [ref=e21]: 脸型
+            - text: 与
+            - strong [ref=e22]: 个人色彩季型
+            - text: ，生成可付费解锁的颜值报告（含 PDF 下载），最终为线下的化妆私教服务引流。两道硬约束从第一天就立在那里：
+          - list [ref=e23]:
+            - listitem [ref=e24]:
+              - strong [ref=e25]: 隐私
+              - text: ——人脸照片绝不能上传服务器。这不是合规加分项，是产品能不能做的底线
+            - listitem [ref=e26]:
+              - strong [ref=e27]: 窗口
+              - text: ——一个月内从需求冻结走到上线
+          - paragraph [ref=e28]:
+            - img "产品结构：首页 · 拍照分析 · 报告" [ref=e29]
+          - heading "我的角色" [level=2] [ref=e30]
+          - paragraph [ref=e31]: 独立全栈交付：需求冻结与规格文档、系统架构、算法适配、前后端实现、测试体系、交付与上线清单。最终产物不只是代码——技术方案、测试指南、真机回归清单、客户版上线准备清单，都是交付物的一部分。约 2.6 万行：后端 9.3k（Python/FastAPI）+ 前端 16.4k（uniapp/Vue3/TS）。
+          - heading "技术决策" [level=2] [ref=e32]
+          - paragraph [ref=e33]:
+            - strong [ref=e34]: 隐私优先管线
+            - text: 是整个产品的地基：拍照后
+            - code [ref=e35]: wx.faceDetect
+            - text: 在端侧提取 106 个关键点与 3 区肤色 RGB，组成不到 1KB 的特征数据上报，临时文件立即清理。后端 API 用 schema 校验
+            - strong [ref=e36]: 物理拒绝
+            - text: base64/URL 图片字段——不是"约定不传"，是
+            - strong [ref=e37]: 想传也传不进来
+            - text: 。
+          - paragraph [ref=e38]:
+            - img "隐私数据管线" [ref=e39]
+          - paragraph [ref=e40]:
+            - strong [ref=e41]: 算法层做成适配器接口
+            - text: （脸型/肤色/推荐三个模块可独立替换）：36 关键点匹配 7 类脸型模板叠加三庭五眼比例；侧脸 9 点算鼻突比与面部凸角得到"折叠度"（侧脸立体度，按甲方要求只出高/中/低档不展示分数）；3 区 RGB 经 IQR 去异常后转 HSV/Lab 判定春/夏/秋/冬季型。
+          - paragraph [ref=e42]:
+            - strong [ref=e43]: 商业闭环一步到位
+            - text: ：
+          - paragraph [ref=e44]:
+            - img "付费与引流闭环" [ref=e45]
+          - paragraph [ref=e46]: 免费版只给 3 项钩子，¥19.9 解锁完整八板块报告（PDF 同款排版可下载），末尾落到私教预约：
+          - paragraph [ref=e47]:
+            - img "报告八板块结构" [ref=e48]
+          - paragraph [ref=e49]:
+            - text: 工程上几个值得说的决定：
+            - code [ref=e50]: MOCK_WECHAT
+            - text: 开关让登录/支付/退款在无微信凭证的本地全自动跑通，切真实链路前端无感；PDF 排版用 WeasyPrint、缺 Pango 运行库时自动降级 fpdf2 纯 Python 绘制；管理端在线改配置——甲方 0903 版内容迭代（文案红线、板块调整）
+            - strong [ref=e51]: 没有改一行代码
+            - text: 。
+          - paragraph [ref=e52]:
+            - strong [ref=e53]: 把内容规则当工程约束
+            - text: ：与甲方共同冻结了文案红线（禁负面外貌字眼、比例数据一律正向解读）、文案落库于分析时、老报告不回溯——写进了领域术语表，让"怎么说话"和"怎么写代码"有同一份事实源。
+          - heading "结果" [level=2] [ref=e54]
+          - generic [ref=e55]:
+            - generic [ref=e56]: "1"
+            - generic [ref=e57]: 个月，需求冻结到上线清单
+          - generic [ref=e58]:
+            - generic [ref=e59]: <1KB
+            - generic [ref=e60]: 上报载荷，照片全程不出设备
+          - generic [ref=e61]:
+            - generic [ref=e62]: "178"
+            - generic [ref=e63]: 个 pytest 用例 + E2E 黑盒
+          - generic [ref=e64]:
+            - generic [ref=e65]: ¥19.9
+            - generic [ref=e66]: 解锁 8 板块报告，退款可回收
+          - paragraph [ref=e67]: 一个月、一个人、完整闭环：隐私承诺以架构兑现而非口头承诺；测试体系里的 E2E 黑盒直接对运行中的服务器走完整链路，能抓住"代码已更新但进程未重启"这类部署漂移；甲方的内容迭代走配置而非发版。65 个提交，2026-08-24 到 09-24。
+    - contentinfo [ref=e68]:
+      - generic [ref=e69]:
+        - generic [ref=e70]: © 2026 yongkong. 基于 Next.js 构建，静态导出。
+        - link "GitHub" [ref=e71] [cursor=pointer]:
+          - /url: https://github.com/yongkong
+  - button "Open Next.js Dev Tools" [ref=e77] [cursor=pointer]
