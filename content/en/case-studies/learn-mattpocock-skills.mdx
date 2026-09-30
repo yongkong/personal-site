@@ -1,53 +1,36 @@
 ---
-title: "Building learn-mattpocock-skills in a Week"
-description: "A solo bilingual course site shipped in a week — where the delivery method was the subject: spec → tickets → implement, with assertions and review on every diff."
-date: 2026-09-24
+title: "Learn It by Building It: the Agent Skills Course Site"
+description: "Learning these skills was the process of building the site that teaches them: three days, 24 issues, 10 learning logs — every workflow the course teaches has one real run in the repo's issue history."
+date: 2026-09-20
 featured: true
 ---
 
 ## Background
 
-learn-mattpocock-skills is a bilingual course site teaching AI-native
-development workflows ("Agent Skills 中文课"). The audience is
-Chinese-speaking developers moving from "I use AI to autocomplete" to "AI
-is part of a disciplined process." The constraint was brutal and familiar:
-one person, no design team, and a reason to ship *this week* — content
-sites that launch stale never launch.
+The [course site](https://yongkong.github.io/learn-mattpocock-skills/) teaches Matt Pocock's agent skills — 25 of them, five chapters. It is also its own case study: I didn't learn the skills first and build afterwards, I built with them while learning them. The repo was set up with `/setup-matt-pocock-skills` on Sep 18, the first full pipeline run finished that same day, and the build wrapped on Sep 20. Three days. Every workflow the course teaches has one real run in the repo's issue history, and you can click through all of them.
 
 ## My role
 
-Solo, end to end: spec, information architecture, content, design,
-implementation, and deployment. That sounds like a lot until you separate
-what the AI-native workflow actually requires from a human — deciding,
-mostly — from what it doesn't — typing, mostly.
+One person, two hats. As a learner I kept test scores, weak-cluster diagnoses and prescriptions in a daily log — ten entries under learning-records/. As an operator I ran the pipeline that took the site from idea to launched product. Both hats share one evidence trail: GitHub issues #1–#24, one commit per issue, searchable in `git log` as `feat: 工单 #N`.
 
 ## Technical decisions
 
-Next.js + TypeScript + MDX, statically exported. Content lives in MDX with
-build-time validation: a post with a missing title or date fails the build
-rather than rendering broken. The delivery method mirrored the course
-subject:
+The main pipeline — `grill → spec → tickets → implement → code-review`, with implement driving /tdd one red-green slice at a time — ran end to end three times: the course home (#1 spec → #2/#3 tickets), the dictionary (#4 → #5/#6), and the public-site refactor (#12 → #13–#24, twelve tickets with blocked-by dependency edges; nine landed the same day). Every ticket ran in a fresh session, context cleared when done.
 
-1. a short spec — positioning, sections, what's explicitly out of scope
-2. tracer-bullet tickets, each a vertical slice with acceptance criteria
-3. one pre-agreed testing seam (the rendered static output) with
-   scriptable assertions, so "done" was checkable by a machine
-4. code review on every diff — including the AI-written parts, *especially*
-   the AI-written parts
+Besides the three specs, #7 was a different kind of ticket. Turning a private study workspace into a public course site: audience, information architecture, register, vehicle — none of it decidable, fog too thick for one session. So /wayfinder drew a map. Two research tickets (#8, #9) went to background subagents in parallel; two decision tickets (#10, #11) I answered question by question, and for the first time I pushed back on the AI's proposal — navigation experience and written register — which reshaped the map. Before deciding, /prototype produced three candidate homepages, and the "answer experiment" became the entire content of #10. The day the map cleared, /to-spec wrote #12 and /to-tickets split it into twelve tickets.
 
-The stack was chosen for restartability, not novelty: everything I already
-had proof I could ship fast.
+One decision got overturned along the way: #7 settled on pure static + GitHub Pages, and when #12 was written it became Next.js + shadcn/ui + Vercel, revision archived. The map governs direction, not loyalty.
+
+The stack is unremarkable on purpose: Next.js + TypeScript + MDX, statically exported, frontmatter validated at build time. What mattered was the testing seam — "done" was judged by a machine against the rendered static output, not by feel.
 
 ## Outcome
 
-<Stat value="7" label="days, idea to production" />
-<Stat value="1" label="person, end to end" />
-<Stat value="0" label="servers to operate (static)" />
+<Stat value="3" label="days, idea to launch" />
+<Stat value="24" label="issues, one per pipeline run" />
+<Stat value="10" label="learning logs on file" />
 
-Idea to deployed static site in a week, working evenings. What the
-workflow made genuinely cheap: scaffolding, boilerplate, the MDX pipeline,
-first drafts of repetitive structure. What stayed expensive, correctly:
-positioning, ordering of ideas, and the final read of every sentence a
-learner would see. The receipts live in the repository — build logs,
-assertion counts, commit history — which is the point: claims about an
-AI-native workflow should be auditable, not aspirational.
+Launch landed on day two, followed by three failures in a row: the Vercel import lacked a Root Directory so the build died; statically exported RSC prefetches 404'd, so every Link dropped prefetch; the resume-learning button mismatched hydration, fixed with a two-stage default. The one-off Vercel token issued during debugging got a /wizard-generated four-phase script (locate → verify → y/N-gated delete → confirm) and was revoked once its life ended. Then /improve-codebase-architecture ran the first architecture review; six improvements landed, including a real latent bug: the MDX pipeline never had GFM enabled, so tables in the first four lessons rendered as vertical bars.
+
+The neat part is the loop. The wayfinder lesson went live while the same map was being drawn for this very site, and post-launch bugs and architecture debt became practice material for the upkeep chapter — the courseware grew out of the site's real decisions. After day three the loop kept running: spaced retests kept producing data (records 0007–0010), the weak cluster was re-diagnosed from "discipline no-go zone" to "old intuition overriding the new rule", and quiz generation started adding deliberate variations.
+
+The full retrospective lives in the repo, three layers deep, all clickable: [docs/journey.md](https://github.com/yongkong/learn-mattpocock-skills/blob/main/docs/journey.md) (timeline plus a skill-by-skill evidence table), [issues #1–#24](https://github.com/yongkong/learn-mattpocock-skills/issues), and [learning-records/](https://github.com/yongkong/learn-mattpocock-skills/tree/main/learning-records). Claims about this workflow should be auditable, not aspirational — that trail is the audit.

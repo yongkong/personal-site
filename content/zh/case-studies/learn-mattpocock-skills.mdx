@@ -1,33 +1,36 @@
 ---
-title: "一周建成 learn-mattpocock-skills 课程站"
-description: "一个人、一周、双语课程站上线——交付方式本身就是课程主题：规格 → 工单 → 实现，每个 diff 都有断言与审查。"
-date: 2026-09-24
+title: "边学边造：三天建成的 Agent Skills 中文课"
+description: "学这套 skills 的过程，就是用这套 skills 把课站造出来的过程：三天、24 张 issue、10 份学习日志，课程教的每个流程，issue 历史里都有一次真实运行。"
+date: 2026-09-20
 featured: true
 ---
 
 ## 背景
 
-learn-mattpocock-skills 是一个讲授 AI 原生开发工作流的双语课程站（"Agent Skills 中文课"）。受众是从"我用 AI 补全代码"走向"AI 是我纪律化流程一部分"的中文开发者。约束残酷而熟悉：一个人、没有设计团队、必须**本周**上线——内容站一旦放凉就永远上不了线。
+这个[课程站](https://yongkong.github.io/learn-mattpocock-skills/)教的是 Matt Pocock 的 agent skills（25 个技能，五章）。它本身就是这套技能的实战案例：我没有先学完再动手，而是边用边学——9 月 18 日按 `/setup-matt-pocock-skills` 把仓库配好，同一天跑完第一轮主流程，20 日收尾。三天。课程教什么，仓库的 issue 历史就真实走过什么，可以逐条点开对照。
 
 ## 我的角色
 
-独立端到端：规格、信息架构、内容、设计、实现、部署。听起来工作量惊人——直到你把 AI 原生工作流真正要求人做的事（主要是**决策**）和它不要求人做的事（主要是**打字**）分开。
+一个人，两个身份。学员身份有测验成绩、薄弱簇归因和处方，逐日写进 learning-records/，共 10 篇；操作员身份负责跑流水线，把站点从想法变成上线产品。两个身份共用同一份证据：GitHub Issues #1–#24，一票一个 commit，`git log` 里按 `feat: 工单 #N` 可检索。
 
 ## 技术决策
 
-Next.js + TypeScript + MDX，静态导出。内容全部 MDX 化并带构建期校验：缺标题或缺日期的文章让构建失败，而不是渲染出一个坏页面。交付方式与课程主题互为镜像：
+主流程 `grill → spec → tickets → implement → code-review`（implement 内部驱动 /tdd 一次一个红绿切片）完整跑了三轮：课程首页（#1 spec → #2/#3 工单）、词典（#4 spec → #5/#6 工单）、公开课站改造（#12 spec → #13–#24 共 12 张工单，带 blocked-by 依赖边，当天落了 9 张）。每张工单开一个全新会话执行，做完即清上下文。
 
-1. 一份短规格——定位、栏目、明确不做什么
-2. tracer-bullet 工单，每张是一个带验收标准的纵切片
-3. 一个事先约定的测试接缝（渲染后的静态产物）加可脚本化断言，"完成"由机器判定
-4. 每个 diff 都做 code review——包括 AI 写的部分，**尤其是** AI 写的部分
+三张 spec 之外，#7 是另一种票。把教学工作区改造成公开课站，受众、信息架构、语域、载体一条都拍不下来，雾大到单次会话装不下，于是用 /wayfinder 铺图：#8/#9 两张 research 票交给后台子代理并行跑；#10/#11 两张决策票由我逐题拍板——第一次对 AI 的方案说了不（导航体验、语域书面化），这两条异议直接改了地图的形状。拍板前 /prototype 出过 A/B/C 三版首页原型，「答题实验」的结果就是 #10 的全部内容。地图走清当天，/to-spec 写出 #12，/to-tickets 拆出 12 张工单。
 
-技术栈按"可重启性"而非新鲜度选择：全是我已经证明过能快速交付的东西。
+载体决议被推翻过一次：#7 定的是纯静态 + GitHub Pages，#12 写 spec 时升级成 Next.js + shadcn/ui + Vercel，修订有存档。地图管方向，不管死守。
+
+技术栈本身没什么好说的：Next.js + TypeScript + MDX，静态导出，构建期校验 frontmatter。值得一提的是测试接缝——「完成」由机器对着渲染后的静态产物判定，不靠自觉。
 
 ## 结果
 
-<Stat value="7" label="天 · 从想法到上线" />
-<Stat value="1" label="人 · 端到端" />
-<Stat value="0" label="台服务器需要运维（静态）" />
+<Stat value="3" label="天 · 从想法到上线" />
+<Stat value="24" label="张 issue · 全程留痕" />
+<Stat value="10" label="篇学习日志入档" />
 
-从想法到静态站上线，一周的夜晚。这套流程真正变便宜的：脚手架、样板代码、MDX 管线、重复性结构的首稿。依然昂贵、也应该昂贵的：定位、观点的排序、以及每一句学习者会读到的文字的终审。证据都在仓库里——构建日志、断言数量、提交历史——这正是要点：关于 AI 原生工作流的主张应该可审计，而不是可向往。
+上线在第 2 天，当天连排三障：Vercel 导入没设 Root Directory，构建失败；静态导出的 RSC 预取打 404，全站 Link 关掉 prefetch；续学按钮 hydration 失配，改成两段式默认值。排障期发过一次性 Vercel token，用 /wizard 生成四阶段脚本（定位 → 核对 → y/N 门删除 → 验证）走完生命周期即弃。随后 /improve-codebase-architecture 跑了首轮架构评审，六项改进落地，顺手修掉一个存量真 bug：MDX 管线一直没开 GFM，前四课的表格全渲染成竖线。
+
+最巧的是闭环。学到 wayfinder 那一课时，这张地图正在为这个站点铺开；上线后的 bug 和架构债，反过来成了 Upkeep 章节的现成素材——课件内容就是从站点的真实决策里长出来的。三天之后流程没停：间隔重测继续出数据（0007–0010），薄弱簇从「纪律性禁区」升级归因为「旧直觉压过新规则」，出题开始显式加变式。
+
+完整复盘在仓库里，三层证据全部可点开：[docs/journey.md](https://github.com/yongkong/learn-mattpocock-skills/blob/main/docs/journey.md)（时间线与技能→证据对照）、[Issues #1–#24](https://github.com/yongkong/learn-mattpocock-skills/issues)、[learning-records/](https://github.com/yongkong/learn-mattpocock-skills/tree/main/learning-records)。关于这套工作流的主张应该可审计，而不是可向往——这三层留痕就是审计入口。
