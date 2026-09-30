@@ -101,6 +101,14 @@ for (const lang of ["en", "zh"]) {
   }
 }
 
+// QR surface is zh-only (WeChat mini-program: en visitors cannot use it).
+const zhFace = read("zh/case-studies/face-analysis/index.html");
+const enFace = read("case-studies/face-analysis/index.html");
+if (zhFace && enFace) {
+  check("zh face study offers the scan-to-try QR", zhFace.includes("/images/face-analysis/qr.jpg"));
+  check("en face study has no QR (WeChat-only surface)", !enFace.includes("/images/face-analysis/qr.jpg"));
+}
+
 check("out/index.html exists (en home)", !!en);
 check("out/zh/index.html exists (zh home)", !!zh);
 

@@ -1,0 +1,30 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 300" font-family="ui-sans-serif, system-ui, 'Microsoft YaHei', sans-serif">
+  <style>
+    .hdr { fill: #0f172a; font-size: 14px; font-weight: 700; }
+    .axis { fill: #475569; font-size: 11px; }
+    .lbl { fill: #0f172a; font-size: 12.5px; font-weight: 600; }
+    .sub { fill: #475569; font-size: 10.5px; }
+    .val { fill: #0f172a; font-size: 13px; font-weight: 700; }
+    .valB { fill: #0369a1; font-size: 13px; font-weight: 700; }
+    .note { fill: #0369a1; font-family: ui-monospace, Menlo, Consolas, monospace; font-size: 10.5px; font-weight: 700; }
+  </style>
+
+  <text class="hdr" x="24" y="34">度量驱动：把二次方变成常数（ADR-0007）</text>
+  <text class="sub" x="24" y="53">直接分页读 CHANGETABLE 对窗口大小是二次方的——每取一页都重读整张内部变更表</text>
+  <text class="axis" x="24" y="86">每百万变更的数据库 CPU · DB CPU per 1M changes</text>
+
+  <!-- bar 1: 170s, scale 610px -->
+  <text class="lbl" x="24" y="127">直翻 CHANGETABLE 分页</text>
+  <text class="sub" x="24" y="144">page CHANGETABLE directly</text>
+  <rect x="230" y="112" width="610" height="34" rx="4" fill="#94a3b8"/>
+  <text class="val" x="848" y="134">170 s</text>
+
+  <!-- bar 2: 5s, 610*5/170 ≈ 18px -->
+  <text class="lbl" x="24" y="197">窗口物化后再分页</text>
+  <text class="sub" x="24" y="214">materialise into staging, then page</text>
+  <rect x="230" y="182" width="18" height="34" rx="4" fill="#0369a1"/>
+  <text class="valB" x="258" y="204">5 s</text>
+
+  <text class="note" x="24" y="254">per page: 3,862 logical reads · 0.5–1.3s CPU  →  3–7ms per page</text>
+  <text class="note" x="24" y="276">the 91s fill moved off the request path · claim + lease + reclaim sweep</text>
+</svg>

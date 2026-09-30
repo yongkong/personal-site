@@ -1,0 +1,110 @@
+---
+title: "My AI-Native Development Workflow: Spec → Tickets → Implementation"
+description: "Using this personal site's real construction as the example: wiring Matt Pocock's agent skills chain — grilling, glossary, spec, tracer-bullet tickets, TDD at one seam, two-axis review — into an auditable pipeline."
+date: 2026-09-28
+---
+
+"I write code with AI" and "AI is part of my process" are two different things. The first treats AI as a faster keyboard. The second re-divides the work between what humans and machines are each good at.
+
+This post walks through my complete workflow, using the personal site I just shipped (the one you're reading) as the case. It's not my invention — it's Matt Pocock's agent skills (`mattpocock-skills`) wired into a real project. Every stage below records what it actually produced on this site, all verifiable in the git history and ticket files. A claim about AI-native workflow should be auditable, not aspirational.
+
+## First, why an agent needs a process at all
+
+Work with agents long enough and three properties change the economics of engineering:
+
+1. **It rationalizes, and it never blushes.** A human skips a test and feels a twinge. An agent doesn't. Say "skip tests just this once" and it will — confidently.
+2. **Its context is scarce.** A session can't hold a project. Anything kept "in memory" eventually gets lost.
+3. **Its output is nearly unlimited.** So is its error output.
+
+Add the three up and the conclusion is: **push decisions forward, push state outward.** Make decisions while the context is still clean and write them into files; let every implementation step start from files, not from memory. The six steps below are that idea, landed.
+
+## Step one: interrogate, don't start building
+
+The `grilling` skill's underlying picture is a **design tree**: every decision branches into the decisions hanging off it. You work the tree in **rounds** — each round asks only the questions on the "frontier": everything whose prerequisites are already settled and can be answered now, asked together, each with a recommended answer. Questions whose shape depends on answers you haven't heard wait for a later round.
+
+So when the idea is "I want a personal website," the agent's biggest value isn't generating code — it's **forcing the vague to become precise**. My first frontier round looked roughly like:
+
+- Who is the primary audience? (Recommended: overseas remote clients/employers; when other visitors' needs conflict, the primary audience wins.)
+- What is the conversion action? (Send an email or book a call — not follower growth.)
+- Of the 12 years of enterprise work, what can be published anonymized, and what must never be touched?
+
+Two rounds later, "personal website" had edges: what's in v1, and what is explicitly not. Grilling's exit condition is strict: **the frontier is empty** — every branch of the design tree visited, nothing silently assumed. The questions you never asked are exactly where you'll rework later.
+
+## Step two: nail down the language
+
+What interrogation deposits isn't just answers — it's **vocabulary**. The `domain-modeling` skill requires every settled term to be written into `CONTEXT.md` at the root the moment it crystallizes, and actively challenges conflation afterwards: "You said 'account' — do you mean the Customer or the User? Those are different things."
+
+My favorite entry in this site's glossary: **a Case Study and a Project Card are two different things.** The first is a deep narrative of one outcome (background → my role → technical decisions → outcome) — the core content that convinces potential clients. The second is a one-line display of a public GitHub repo — high density, low depth. Confuse them once and the spec, the tickets, and the code inherit the confusion — you end up with a page that is neither deep nor dense.
+
+Beyond vocabulary, the **hard-to-reverse decisions** become ADRs (architecture decision records). The skill sets three hard criteria — all three must hold: hard to reverse, surprising without context, the result of a genuine trade-off. This site, ten tickets and dozens of decisions later, has exactly two ADRs:
+
+- **ADR-0001**: v1 is fully static, no database — static export is what buys the "single test seam" step five leans on
+- **ADR-0002**: bilingual routing, English default at `/`, complete Chinese edition at `/zh`
+
+Everything else would only dilute these two. The fewer the ADRs, the sharper each one.
+
+## Step three: a one-page spec
+
+`to-spec` converges the conversation into a spec with a fixed template: problem statement, solution, user stories, implementation decisions, **testing decisions**, explicit out-of-scope. Two iron rules:
+
+- **No file paths, no code.** They rot fastest. A spec exists to make every later step **decidable**, not to be exhaustive.
+- **The test seams are agreed here**, not improvised when tests get written. The skill's own words: the fewer seams across the codebase, the better — the ideal number is one.
+
+This site's spec actually hit the ideal. Its Testing Decisions section reads: **the project's single test seam = the statically rendered routes emitted by `next build`.** For a content site, testing component internals buys nothing — when a component breaks, a route assertion goes red anyway. That decision, confirmed with me at spec time, is the foundation every assertion in step five stands on.
+
+One page is enough. While writing the spec you're designing; by page three, you're implementing on the agent's behalf.
+
+## Step four: tracer-bullet tickets
+
+`to-tickets` breaks the spec into nine tickets, each a **tracer bullet**: a complete vertical cut through every layer (content, routing, UI, tests), independently demoable, sized to fit one clean context window — a deliberate accommodation of the "agent context is scarce" property. Each ticket declares what blocks it:
+
+```markdown
+# 02: Blog Post collection
+
+**What to build:** bilingual list/detail routes; core behavior:
+each language lists only the posts it actually has.
+
+**Blocked by:** 01 (site skeleton)
+
+- [ ] A Chinese-only post appears under /zh/blog and not under /blog
+- [ ] Post-build assertions cover the language-filter behavior
+```
+
+Blocking edges turn scheduling into mechanics: **any ticket whose blockers are all done is the current frontier — pick it up.** "What do I do next?" never came up again for the rest of the project. The skeleton ticket had no blockers and went first; content and page tickets ran in parallel; launch closed it out.
+
+Two details that paid off later:
+
+- **The language-filter rule survived to today.** The assertions never hardcoded "placeholder post A appears/doesn't appear" — they derive expectations from the content directory. So when placeholders were swapped for real writing (ticket 08), and again when the English edition landed, the rule kept being tested. The fact that you're reading this in English right now is that assertion letting it through.
+- **The process is alive.** After launch, a visual-polish round was needed; ticket 10 was simply appended. No "unplanned work" panic — the seams and assertions were all there, and the existing net caught the change.
+
+`to-tickets` also handles one explicit exception: the **wide refactor** — a single mechanical change sweeping the whole codebase (a column rename, a shared symbol retype) that no vertical slice can contain without going red everywhere. The answer is expand–contract: new form beside old, migrate call sites in blast-radius-sized batches, delete the old form last. This site never triggered that branch — but had the sed migration in my next post been one size larger, it would have.
+
+## Step five: every ticket is red → green
+
+`implement` keeps few rules, but they're hard:
+
+- **Red before green.** Write the failing assertion, watch it fail, then implement to green. No anticipating future tests, no speculative features.
+- **One slice per cycle.** One seam, one assertion, one minimal implementation.
+- **Refactoring is not part of the loop.** It belongs to the review stage (next step), not the red → green implementation cycle — mix it in and "green" loses its meaning: you no longer know whether it's the new behavior or the incidental refactor that turned the light on.
+- **Typecheck often, single tests often, the full suite once at the end** — then commit.
+
+The numbers speak: ticket 02 grew the assertions from 13 to 28; the site stands at 183 today, all running in CI, all living on the same single seam. The economics of one seam: **assertion count grows linearly with content while maintenance cost stays constant** — they assert only external behavior (routes exist, expected content renders, the language filter holds), so the implementation can be renovated without touching a single test.
+
+## Step six: every diff passes a two-axis review
+
+`code-review` splits review into two **deliberately unmerged** axes, each in an isolated sub-agent:
+
+- **Standards axis**: does the code follow the repo's own rules — the glossary, the ADRs — plus a fixed baseline of Fowler code smells (mysterious name, duplicated code, feature envy, speculative generality...). The repo's documented standards always override the baseline: what the repo endorses, the baseline doesn't get to flag.
+- **Spec axis**: does it faithfully implement the ticket — what's missing, what's extra (scope creep), what's wrong.
+
+Why split? Because **a change can pass one axis while failing the other**: code that follows every convention yet implements the wrong thing, and code that does exactly what the ticket asked yet breaks the project's conventions, are two different diseases. Merge the reports and the good axis masks the bad one. Even "worst issue" is never ranked across axes.
+
+On this site, review wasn't a courtesy — it was the primary bug-catcher. Ticket 02's review produced four fixes on the spot: missing frontmatter title/date must fail the build (rather than render silently broken pages), list and detail date formats unified through localization, assertions re-derived from the content directory, and MDX element-rendering checks added. And one finding was ruled "**defensible scope creep**" — a navigation link added in passing — the review kept it rather than bouncing it. That's judgment, not just a gate.
+
+(What kind of bugs did review actually catch, and why do I call it the primary catcher? Next post.)
+
+## The biggest lesson
+
+> AI made "writing code" cheap. It did not make "thinking it through" cheap. The spec is the expensive part; the code is the cheap part — do the expensive part well, and the cheap part actually gets cheap.
+
+Nine initial tickets, one appended, 183 assertions green. The pipeline itself is this site's third case study: every stage's output — glossary, ADRs, spec, tickets, assertion script, review records — is lying in the repository, open to audit.

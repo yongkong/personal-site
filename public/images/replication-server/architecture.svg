@@ -1,0 +1,80 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 400" font-family="ui-sans-serif, system-ui, 'Microsoft YaHei', sans-serif">
+  <style>
+    .side { fill: #f8fafc; stroke: #cbd5e1; }
+    .hdr { fill: #0f172a; font-size: 14px; font-weight: 700; }
+    .box { fill: #ffffff; stroke: #cbd5e1; }
+    .lbl { fill: #0f172a; font-size: 12.5px; font-weight: 600; }
+    .sub { fill: #475569; font-size: 10.5px; }
+    .flow { stroke: #0369a1; stroke-width: 2.5; fill: none; marker-end: url(#arw); }
+    .flowTxt { fill: #0369a1; font-size: 11.5px; font-weight: 700; }
+    .obs { stroke: #94a3b8; stroke-width: 2; fill: none; stroke-dasharray: 5 4; marker-end: url(#arw2); }
+    .obsTxt { fill: #64748b; font-size: 11px; font-weight: 600; }
+    .note { fill: #0369a1; font-family: ui-monospace, Menlo, Consolas, monospace; font-size: 10px; font-weight: 700; }
+  </style>
+  <defs>
+    <marker id="arw" markerWidth="9" markerHeight="9" refX="8" refY="4.5" orient="auto">
+      <path d="M0,0 L9,4.5 L0,9 z" fill="#0369a1"/>
+    </marker>
+    <marker id="arw2" markerWidth="9" markerHeight="9" refX="8" refY="4.5" orient="auto">
+      <path d="M0,0 L9,4.5 L0,9 z" fill="#94a3b8"/>
+    </marker>
+  </defs>
+
+  <!-- SQL Server source -->
+  <rect class="side" x="16" y="26" width="252" height="336" rx="12"/>
+  <text class="hdr" x="142" y="54" text-anchor="middle">SQL Server 源端</text>
+  <text class="sub" x="142" y="71" text-anchor="middle">Source · on-premises</text>
+  <rect class="box" x="36" y="88" width="212" height="46" rx="8"/>
+  <text class="lbl" x="142" y="107" text-anchor="middle">业务表 · 67 张 / 9,520 万行</text>
+  <text class="sub" x="142" y="124" text-anchor="middle">business tables</text>
+  <rect class="box" x="36" y="150" width="212" height="46" rx="8"/>
+  <text class="lbl" x="142" y="169" text-anchor="middle">Change Tracking</text>
+  <text class="sub" x="142" y="186" text-anchor="middle">引擎内捕获 · 写事务零负担</text>
+  <rect class="box" x="36" y="212" width="212" height="46" rx="8"/>
+  <text class="lbl" x="142" y="231" text-anchor="middle">交付窗口物化 · Staging</text>
+  <text class="sub" x="142" y="248" text-anchor="middle">每页 3–7ms（度量驱动）</text>
+  <rect class="box" x="36" y="274" width="212" height="46" rx="8"/>
+  <text class="lbl" x="142" y="293" text-anchor="middle">服务端游标</text>
+  <text class="sub" x="142" y="310" text-anchor="middle">只在连续确认段上前进</text>
+  <line class="flow" x1="142" y1="134" x2="142" y2="148"/>
+  <line class="flow" x1="142" y1="196" x2="142" y2="210"/>
+  <line class="obs" x1="142" y1="258" x2="142" y2="272"/>
+
+  <!-- Two IIS hosts -->
+  <rect class="side" x="316" y="26" width="252" height="336" rx="12"/>
+  <text class="hdr" x="442" y="54" text-anchor="middle">交付宿主 · 运维宿主</text>
+  <text class="sub" x="442" y="71" text-anchor="middle">two IIS hosts · one API</text>
+  <rect class="box" x="336" y="88" width="212" height="60" rx="8"/>
+  <text class="lbl" x="442" y="110" text-anchor="middle">Delivery Host</text>
+  <text class="sub" x="442" y="127" text-anchor="middle">分页出站 · 确认推进游标</text>
+  <text class="sub" x="442" y="141" text-anchor="middle">queue/list → queue/update</text>
+  <rect class="box" x="336" y="164" width="212" height="60" rx="8"/>
+  <text class="lbl" x="442" y="186" text-anchor="middle">Ops Host</text>
+  <text class="sub" x="442" y="203" text-anchor="middle">清理 · 日报 · 保留期巡检</text>
+  <text class="sub" x="442" y="217" text-anchor="middle">cleanup · digest · retention</text>
+  <text class="sub" x="442" y="248" text-anchor="middle">两宿主不共享连接池、线程池与重启</text>
+  <text class="sub" x="442" y="263" text-anchor="middle">no shared pools · no shared restarts</text>
+  <line class="flow" x1="268" y1="235" x2="334" y2="118"/>
+  <text class="flowTxt" x="284" y="164">分页供给</text>
+
+  <!-- Remote site -->
+  <rect class="side" x="616" y="26" width="268" height="336" rx="12"/>
+  <text class="hdr" x="750" y="54" text-anchor="middle">异地目标端</text>
+  <text class="sub" x="750" y="71" text-anchor="middle">Remote site</text>
+  <rect class="box" x="636" y="88" width="228" height="60" rx="8"/>
+  <text class="lbl" x="750" y="110" text-anchor="middle">Windows Service 客户端</text>
+  <text class="sub" x="750" y="127" text-anchor="middle">HTTPS 轮询 · gzip 双向压缩</text>
+  <text class="sub" x="750" y="141" text-anchor="middle">API Key + IP 白名单</text>
+  <rect class="box" x="636" y="172" width="228" height="46" rx="8"/>
+  <text class="lbl" x="750" y="191" text-anchor="middle">Oracle</text>
+  <text class="sub" x="750" y="208" text-anchor="middle">幂等 upsert · 缺表自动创建</text>
+  <line class="flow" x1="750" y1="148" x2="750" y2="170"/>
+  <rect class="obs" x="636" y="242" width="228" height="52" rx="8" fill="#ffffff"/>
+  <text class="lbl" x="750" y="263" text-anchor="middle" font-size="11.5">逐行确认 + 客户端日志回传</text>
+  <text class="sub" x="750" y="280" text-anchor="middle">ack + clientlog → server</text>
+  <line class="obs" x1="636" y1="268" x2="570" y2="297"/>
+
+  <!-- bottom ribbon -->
+  <rect x="16" y="372" width="868" height="0" fill="none"/>
+  <text class="note" x="450" y="392" text-anchor="middle">at-least-once delivery × idempotent upsert ⇒ loss impossible by construction</text>
+</svg>

@@ -1,6 +1,7 @@
 import { MDXRemote } from "next-mdx-remote/rsc";
 
 import { PageShell } from "@/components/page-shell";
+import { QrCard } from "@/components/qr-card";
 import { Stat } from "@/components/stat";
 import type { CaseStudy } from "@/lib/content";
 import { formatDate } from "@/lib/dates";
@@ -24,7 +25,7 @@ export function CaseStudyView({ lang, study }: { lang: Lang; study: CaseStudy })
         {dict.postedOnLabel} {formatDate(study.date, lang)}
       </p>
       <div className="prose mt-8 max-w-none dark:prose-invert">
-        <MDXRemote source={study.body} components={{ Stat }} />
+        <MDXRemote source={study.body} components={{ Stat, QrCard }} />
       </div>
     </PageShell>
   );

@@ -1,0 +1,49 @@
+---
+title: "Maintaining an Enterprise System for 12 Years: Three Things I Learned"
+description: "Six platform generations, ten-million-row data sync, the foundation modules of a 20-person team — three hard lessons from 12 years of enterprise maintenance, and how they became the foundation of my AI workflow today."
+date: 2026-09-27
+---
+
+For 12 years I worked on a case-management platform for an American social-services agency — registering people experiencing homelessness, coordinating the help they receive; every case worker's day ran through it. On a 20-person team I owned the foundation: the gateway, validation, the common libraries, the unified data-operations engine, and the Account, Chat, and Library services together with their multi-year upgrades. The foundation carries a peculiar trust structure: when your module goes down, everyone's does.
+
+Twelve years is long enough to test a lot of "best practices" down to "really?" These three things are what I'm most certain of.
+
+## One: evolution can't be absent, but it can run at its own pace
+
+The system started in 2007 as VB.NET + WinForms and crossed six generations: Silverlight, ASP.NET MVC, AngularJS SPA, Angular + .NET Core, all the way to today's .NET 8 microservices. Every hop was an in-place migration, never a ground-up rewrite — business continuity trumped everything, the system could not stop, so "pause it and upgrade" was never on the table.
+
+I've watched many systems die, and the most common cause isn't "the big upgrade crashed" — it's **the upgrade that never happened**. Technical debt doesn't accumulate linearly; past a point it suddenly accrues interest: the old framework stops getting security patches, you can't hire anyone who knows it, new dependencies won't install — each item "still tolerable" on its own, together fatal. Conversely, carefully planned big upgrades almost always land safely: we carried every one of the six generations through alive — not by being bold, but by treating evolution as an engineering task on par with writing code: migrate the edges first, then the core, keep old and new running side by side until the last moment.
+
+> Long-lived systems die from skipped upgrades far more often than from completed big ones.
+
+## Two: hold the data layer
+
+One key decision I made was converging all data access into a single unified engine: reading, refreshing, and updating data sources all went behind one interface. Business teams never hand-wrote raw data access — not because code review stopped them, but because **there was structurally no second path**. In 12 years the front end changed its face five times; the data engine never moved.
+
+Behind that sits a layering principle: **lock the fast-changing layers and the slow-changing layers separately.** The UI turns over every five years; the data model hasn't moved in fifteen — let them share a fate and you make the most stable thing churn with the fastest one. Splitting the data layer between EF and Dapper by load is the same principle in miniature: the write path wants development velocity, the hot path wants raw-SQL control — but callers on both sides still see the same engine interface.
+
+The hardest campaign was the SQL Server → Oracle replication pipeline: tens of millions of rows, Change Tracking on one side, a Windows Service consuming on the other. Early versions were slow and occasionally lost data; the final architecture made data loss structurally impossible — three gates, each independently sufficient:
+
+```text
+SQL Server side            Oracle side
+├─ pre-flight CT check     ├─ Windows Service
+├─ change-state query API  ├─ transactional batch insert
+└─ batched reads           ├─ structured error tracking (to the batch)
+                            └─ drift → email alert
+```
+
+"Making data loss structurally impossible" and "test coverage for data-loss scenarios" are commitments of two different weight classes. The first is an architectural promise: not "correct every time," but **there is no path that errs**.
+
+## Three: teach the system to feel its own pain
+
+The final piece that made the sync pipeline boring wasn't the algorithm — it was **observability**: structured error tracking down to the batch, an email alert the moment anything drifted, and one status-query API always ready to answer "is the sync healthy?"
+
+Team life was two different species before and after those three landed. Before, "is something wrong with the sync?" was an investigation: log into servers, dig through logs, diff row counts. After, it was one query — and most of the time the alert found you first. "Is the sync healthy?" went from an investigation to a query — that's not garnish, that's the difference between the on-call person sleeping or not.
+
+The meta-lesson 12 years of maintenance taught me: operations isn't about never having problems — it's about **already knowing when one appears**.
+
+## What those 12 years mean to a client
+
+If you're evaluating whether to hand a system to someone for long-term maintenance, don't look at whether they can write code. Look at whether they hold the foundation, keep up with evolution, and build observability. Many people can write code; very few are willing to be present for 12 years.
+
+One closing coda: these three lessons are now the foundation of my AI workflow. "Lock the layers separately" became seam design — the whole site has exactly one test seam. "Structurally impossible" became assertions derived dynamically from the real data source — rules must not live in memory, they must live in structure. "The system feels its own pain" became 183 assertions running in CI — when a problem appears, the build is already red. Methods get replaced; lessons compound.

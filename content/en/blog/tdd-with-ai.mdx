@@ -1,0 +1,92 @@
+---
+title: "Everyone's Coding with AI Now. Why I Still Insist on TDD and Code Review"
+description: "Three real cases from building this site, plus a side-by-side of two agent skill systems — Superpowers and Matt Pocock's skills: in the AI era, TDD becomes an executable spec and code review becomes a two-axis alignment mechanism."
+date: 2026-09-26
+---
+
+The more I write code with AI, the more certain I am of one thing: **tests and code review matter more now, not less.**
+
+The logic is simple. AI raises both the floor and the throughput of code. The floor is higher, so an individual function rarely has dumb bugs; throughput is higher, so the total number of errors needn't drop — and the errors hide deeper: AI code tends to *look* completely correct.
+
+No hand-waving. First, three real cases from building this personal site (all verifiable in the git history), then a comparison of the two agent skill systems I have installed — Superpowers and Matt Pocock's `mattpocock-skills` — on TDD and code review. The two systems barely overlap; together they make the whole picture.
+
+## Case one: page fine, meta tag wrong — caught by a meta-tag-level assertion
+
+While adding SEO to the site, the detail pages' `og:title` was being overridden by the layout-level openGraph config, replaced with the site name. **The page rendered perfectly** — eyeball checking would never find it, because the error lived in a meta tag and would only surface in a social share card.
+
+The assertion did a strict match at the meta-tag level:
+
+```js
+check(
+  `${lang} post detail og:title is the post title (meta-tag level)`,
+  postHtml.includes(`property="og:title" content="${post.title}"`),
+);
+```
+
+Red, fix, green. If the test had only checked "page contains the title" — the title is of course in the page — that bug would have shipped.
+
+## Case two: an assertion that never executed — fake green caught by review
+
+A sneakier class: a test that **looks like it runs but never does**. One og:title spot-check assertion referenced a variable property that didn't exist; the path always read empty, the assertion body never executed — permanently green.
+
+Build-output assertions can't save you from that kind of fake green; code review caught it: the reviewer noticed the data structure the assertion depended on had no such field. Lesson: **a test must not only pass — it must prove it runs** — assertions must derive their inputs from the real data source, and you must have seen it turn red.
+
+## Case three: a batch replace broke class names — build went red instantly
+
+I migrated Tailwind class names with sed; the regex's word-boundary check stacked a second migration onto classes that had already been migrated. Manually checking five or six files might not catch it all — **the build plus the full assertion suite takes one second**, and 133 assertions (at the time) instantly named every broken page.
+
+## Two systems, two kinds of answers
+
+My agent runs two skill systems. Asked "what is TDD?", they give answers that barely overlap — which is exactly what makes this interesting.
+
+### Superpowers: the discipline school
+
+Superpowers' TDD skill is all **iron law and red flags**:
+
+- **"No production code without a failing test first."** Wrote the code first? Delete it. Not "keep it as reference," not "adapt it while writing tests" — delete means delete. Violating the letter of the rules is violating the spirit.
+- **You must watch it fail.** If you never saw the test red, you don't know whether it tests the right thing. A test that passes immediately is precisely the most suspicious signal.
+- **A rationalization table**: "too simple to test," "I'll test after," "deleting X hours of work is wasteful" (sunk-cost fallacy) — all pre-written as red-flag signals. Humans need this table because humans get tired; agents need it even more, because **an agent doesn't blush** — it feels zero discomfort skipping tests, and unless you say so, "just this once" always seems fine to it.
+- It has a sibling rule, `verification-before-completion`: **no completion claims without fresh verification evidence.** "The agent reported success" is itself an assertion requiring independent verification — the rule's footnote says it comes from 24 failure memories.
+
+### Matt: the design school
+
+`mattpocock-skills`' TDD skill cares about a different set of questions:
+
+- **A good test verifies behavior through public interfaces, not implementation details.** The code can be replaced wholesale; the tests shouldn't move. A test should read like a spec: "user can check out with a valid cart."
+- **Seams are agreed up front, fewer is better, the ideal is one.** Tests live at seams — the public boundary where you observe behavior without reaching inside. Where the seam sits is a design decision, settled at spec time (this site actually achieved the single seam: the build output).
+- **Three anti-patterns**: implementation-coupled (mocking internal collaborators, testing private methods — the test shatters on any refactor); tautological (the expected value computed the same way the code computes it — true by construction, it can never disagree with the code — expected values must come from an independent source of truth); horizontal slicing (writing all the tests first, then all the implementation — bulk tests verify *imagined* behavior: you're testing the shape of things, not the behavior a user faces).
+- **Refactoring is not part of the red → green loop; it belongs to review.** Inside the loop you do only the minimal implementation that turns this one assertion green.
+
+### What the contrast really is
+
+One sentence: **Superpowers answers "when and whether" — always, no exceptions, with evidence. Matt answers "where and what" — which seam, what a good test is.**
+
+Discipline without design, and you'll pile a wall of brittle tests at the wrong seam — each one properly red-first, each one taxing every refactor. Design without discipline, and tests decay into afterthoughts — passing immediately, their green proving nothing. That never-executed assertion in case two is exactly where both diseases meet: it wasn't written against the agreed data source at the seam (design absent), and nobody had ever watched it fail (discipline absent).
+
+## Two pieces of the code-review puzzle
+
+For review, the two systems contribute different fragments too.
+
+**Superpowers governs the discipline of the review conversation.** `requesting-code-review` requires the reviewer to be an isolated sub-agent fed precisely: a description, the requirements, and the diff's SHA range — **never the implementer's session history**, because history pollutes judgment. Findings come out graded Critical / Important / Minor: Critical fixed immediately, Important before proceeding. The gem is `receiving-code-review`: feedback is **verified before it's implemented** — check against codebase reality, check whether it breaks existing behavior, run the YAGNI check (grep for actual callers; a "properly implemented" feature nobody calls should be deleted, not implemented). Performative agreement is banned — "You're absolutely right!" is explicitly listed as a violation. You have the right to push back with technical reasoning, and when your pushback was wrong, you correct yourself factually: no apology, no defense.
+
+**Matt governs the structure of what gets reviewed.** `code-review` splits review into two axes — Standards (does the code follow the repo's own rules: glossary, ADRs, Fowler smell baseline) and Spec (does it faithfully implement the ticket) — two parallel sub-agents, one axis each, **never merged or reranked**. Because a change can pass one axis while failing the other: convention-compliant code implementing the wrong thing, and faithful implementation breaking the conventions, are two different diseases — merge the report and the good axis masks the bad one.
+
+The pieces fit: **how to review (isolation, grading, verify-before-accept) + what to review (two axes, baseline, who overrides whom).** Ticket 02's review on this site is the prototype of the assembled puzzle: four fixes produced on the spot (frontmatter validated at build time, date formatting localized, assertions derived dynamically, MDX rendering checks added), and one casually-added nav link ruled "defensible scope creep" and kept — a gate, plus judgment above the gate.
+
+## The three cases, retold in this vocabulary
+
+- **Case one = seam selection.** og:title lives in a meta tag, out of reach of eyeballs and page-level assertions; the assertion had to sit at the highest seam (the built HTML) with meta-tag-level strict matching. Matt's "highest seam" principle decided where it lives; Superpowers' "watch it fail" proved it tests the right thing.
+- **Case two = fake green, and each system has its cure.** Superpowers kills it procedurally: a test that has never been red cannot be trusted. Matt names it as an anti-pattern: expected values must come from an independent source of truth, not the code's own path. What actually caught it was review — the Spec axis noticed the assertion referenced a field that didn't exist. A test must not only pass; it must prove it runs.
+- **Case three = the economics of a regression suite.** One seam + full assertions = computing the blast radius of a batch replace in one second. Which is also why refactoring stays out of the red → green loop and must end with the full suite green: refactoring changes implementation; all-green proves behavior didn't move.
+
+## Conclusion
+
+What the three cases share: none of the bugs were "the code doesn't run" level — they were all **looks like it runs** level. That's the new shape of error in the AI era. And the two skill systems let me compress that intuition into three sentences:
+
+- **Tests are the executable spec for the agent.** You cannot make an agent "understand your intent" through natural language; a red-first, green-later assertion is an unambiguous formalization of intent. TDD stops being "quality culture" and becomes the **interface protocol** between human and agent.
+- **Code review is the alignment mechanism for the agent.** The two axes guard against two failures: implementing the wrong thing inside the conventions, and implementing the ticket faithfully while breaking them. The higher the agent's throughput, the higher the unit value of an alignment check.
+- **Discipline must be externalized.** The agent doesn't fatigue, doesn't blush, doesn't feel anxiety — the human self-control mechanism that runs on psychological discomfort is useless on it. So Superpowers writes discipline as mechanical rules (delete it, watch it fail, no completion claims without evidence) that make every violation too visible to hide.
+
+> AI crushed the cost of writing code to near zero, so verification became the new bottleneck. Wherever the bottleneck is, that's where the discipline belongs: TDD is no longer "quality culture" — it's economics under a throughput constraint. And code review is the two-axis audit of that economy.
+
+So in my AI-native workflow, every diff passes a two-axis review, and every ticket must go red before green. Not for the ritual — because the bugs taught me.

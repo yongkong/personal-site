@@ -1,6 +1,6 @@
 ---
 title: "12 Years on an Enterprise Case-Management Platform"
-description: "Anonymized deep dive: an application platform built to generate business systems — relational data management, distributed data access, and a ten-million-row replication pipeline — evolving through six technology generations without a single rewrite."
+description: "Anonymized deep dive: an application platform built to generate business systems — relational data management, distributed data access, and a tens-of-millions-row replication pipeline — evolving through six technology generations without a single rewrite."
 date: 2026-09-01
 featured: true
 ---
@@ -30,9 +30,11 @@ The platform's job was to make business systems quick to assemble and safe to ru
 
 The judgment those upgrades distilled: long-lived systems die from *skipped* upgrades far more often than from big ones done carefully.
 
-**The work I'm proudest of: the cross-database replication pipeline.** The platform promised seamless access to distributed enterprise data; the reality was tens of millions of rows syncing SQL Server → Oracle. Early versions were slow and occasionally lost data. The final architecture made loss impossible by construction — Change Tracking captures changes on the SQL Server side, exposed through pre-flight health checks and status-query APIs for batched outbound reads; on the Oracle side, a Windows Service writes transactionally in batches, structured error tracking pinpoints drift to a specific batch, and any drift fires an immediate email alert:
+**The work I'm proudest of: the cross-database replication pipeline.** The platform promised seamless access to distributed enterprise data; the reality was tens of millions of rows syncing SQL Server → Oracle. Early versions were slow and occasionally lost data. The final architecture made loss impossible by construction — and redelivery harmless by design. Change Tracking captures changes in-engine with zero burden on business transactions; delivery windows are materialized and paged out through a pull API; on the Oracle side, a Windows Service writes idempotently and acknowledges row by row while a server-side cursor advances only across the contiguous acknowledged run — anything unacknowledged is automatically re-offered, and row-level failures (constraint violations) take a separate retry channel that never stalls the window. Structured error tracking pinpoints drift to the specific row, health is one status query away, and any anomaly fires an immediate email alert:
 
 ![Replication pipeline architecture](/images/enterprise-platform/replication.svg)
+
+A 50-million-row full-table update crossed end to end at 1,316 rows/s; five tables in parallel aggregated 17,306 rows/s — but this pipeline's hardest problem was never speed. It was **making failure legible**: at any moment, there is an answer for where every row stands. The pipeline later crystallized into a standalone ReplicationServer; the full design, failure model, and measurements are in [its own case study](/case-studies/replication-server).
 
 "Is the sync healthy?" went from an investigation to a status query — not a nice-to-have; the difference between whether the person on call sleeps.
 

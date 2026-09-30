@@ -1,0 +1,53 @@
+---
+title: "ReplicationServer (anonymized): SQL Server → Oracle replication at tens-of-millions-row scale"
+description: "A pull-based, row-level replication service: Change Tracking capture in-engine, a measurement-driven delivery path, row-level and batch-level failures treated separately, and recovery left to an operator runbook with WhatIf dry-runs — every design decision backed by a measured number."
+date: 2026-09-30
+featured: true
+---
+
+## Background
+
+[The enterprise platform](/case-studies/enterprise-platform) in my other case study promised "seamless access to distributed enterprise data." The latest generation of that replication pipeline grew into a dedicated replication service: every change made to registered tables in a source SQL Server is delivered continuously to a remote-site Oracle — the production-like acceptance rig holds 67 tables and 95.2 million rows, the largest single table 50 million.
+
+Three hard constraints were set on day one:
+
+1. **Zero burden on write transactions** — capture must never slow the business; continuity above all
+2. **Every component can fail** — source, network, target, client process; when they fail, the data must not
+3. **Drift must be visible** — the danger is not the error you see, but the inconsistency nobody notices
+
+The previous generation (per-row triggers into a queue table) was slow and occasionally lost data. This was not a patch but a full replacement of capture and delivery — on the condition that *why it was slow* and *why it lost rows* were understood first.
+
+## My role
+
+I owned the design, implementation, and delivery of the whole system, from the first ADR to go-live acceptance: the .NET 10 engine (two IIS hosts — delivery and operations — so ops jobs never share a connection pool, a thread pool, or a restart with the delivery path), the protocol contract for the remote Windows-service client, the database-side ops kit (idempotent, self-verifying schema migration plus recovery stored procedures), the recovery runbook, and a phased go-live acceptance suite.
+
+Ten months, 311 commits, 14 accepted architecture decision records, a 225-line domain glossary — documentation here is not a by-product; it is a deliverable.
+
+## Technical decisions
+
+**Capture: let the database engine hand over the changes itself.** Under triggers, a million-row update paid a million trigger firings inside the business transaction; Change Tracking captures in-engine at zero cost to writes. The consequence was propagated honestly: contract fields that could no longer be filled truthfully (such as "change time") were deleted, not faked with "when the server noticed." A side measurement also exposed a deadlock root cause — replication reads and business writes taking locks in opposite order; the fix enabled snapshot isolation but let only the replication read path opt in, refusing a database-wide switch that would silently change the semantics of business code we don't own. Net-change semantics pair with idempotent upsert: a row updated fifty times delivers once, as its final state — "loss is impossible" and "redelivery is harmless" are two faces of the same coin.
+
+**Delivery path: every piece of complexity carries a measured number.** Paging CHANGETABLE directly is quadratic in window size — every page re-read the whole internal change table: 3,862 logical reads and 0.5–1.3s of CPU per page, measured. Materializing a delivery window into staging once drops it to 3–7ms per page and from 170s to 5s of database CPU per million changes. The materialization itself takes 91 seconds, so it moved off the request path: a poll returns an empty page immediately instead of making the client wait, time out, and retry-storm; if the host claiming a fill dies mid-way, a lease plus a reclaim sweep covers it — the "claimed but empty window" silently-dead table was carved out by IIS recycles and caught by tests first.
+
+![Before and after staging: database CPU per million changes](/images/replication-server/staging.svg)
+
+**Failure model: two kinds of failure, two mechanisms.** Row-level failures (constraint violations, values too wide) become retry entries with per-row counts, offered on a separate retry page — they never stall the delivery window; entries past the threshold are abandoned but kept, because they are the only record that a row differs from the target, awaiting an operator's repair, replay, or close-with-reason. Batch-level failures (target down, client crash) need no machinery: whatever goes unacknowledged is simply re-offered. The cursor advances only across the *contiguous* acknowledged run — "highest acknowledged" would skip holes in the globally shared staging sequence; and an abandoned row holds nothing back, a silently-dead window that the go-live suite caught with its own hands.
+
+![Failure model: row-level and batch-level, separated](/images/replication-server/failure-model.svg)
+
+**Recovery is a human decision, not an automated hope.** Nine recovery stored procedures — quiesce/resume, repair named rows, rewind the cursor, full reseed, skip, release a stranded window — five of them with `@WhatIf=1` dry-runs. ADR-0005 explicitly rejected unattended auto-reseed: "it can empty and reload a million-row target at a moment nobody chose." Even the bulk-load gate may only be closed by an operator: a "reported row count closes the gate automatically" once lifted a hold while work was still in flight; the logic was deleted the day it was found.
+
+**Clocks and observability: make "healthy" queryable.** An incident where the app host ran 2h56m ahead of the database filed 23,000 false alerts; the rule since: every timestamp is stamped `SYSDATETIME()` by the database, and C# writes none. One status row per table (Condition + NextStep guidance), alerts tiered by severity — Critical mailed within five minutes, the rest in a 04:00 daily digest.
+
+![System topology: source · dual hosts · remote client](/images/replication-server/architecture.svg)
+
+Beyond delivery sits one more gate: a phased go-live acceptance suite, 155–164 automated cases run against a pre-production rig (Preflight / Smoke / Contract / WritePatterns / Volume / LiveRecovery / Runbook). Its target-side probe was the first to **prove rows actually reached Oracle** — as the test report puts it, "every earlier observation of the target side was worthless."
+
+## Outcome
+
+<Stat value="95.2M" label="rows · 67 tables · production-like rig" />
+<Stat value="1,316" label="rows/s · 50M-row full-table update, end to end" />
+<Stat value="3–7ms" label="per page · down from 0.5–1.3s CPU per page" />
+<Stat value="164" label="go-live automated cases · 20/20 recovery under load" />
+
+Five tables in parallel aggregate 17,306 rows/s; a 10,000-row page leaves the server in 194ms — the bottleneck was never the replication database, it is the client, the network, and the target. The hard part of replication was never moving rows; that is the easy part. It is making failure legible: an answer exists for where every row stands at any moment, every recovery is a rehearsed operator procedure rather than a prayer, and every design decision carries its measured number. The platform story's "seamless access to distributed enterprise data" finally has an engine of its own.
