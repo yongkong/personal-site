@@ -1,0 +1,90 @@
+---
+title: "Putting OCR Into Production: The Model Was Never the Hard Part"
+description: "Years of document-processing pipelines taught me where OCR actually breaks: crooked scans, uncalibrated confidence, parsers that outlive their model, and the ground truth nobody has. The LLM era rewrote the middle of the stack and moved none of these lessons."
+date: 2026-10-10
+---
+
+The demo took two weeks, and the demo was good. Clean scans, printed text, straight lines, generous margins — the model read nearly everything, the fields landed where they belonged, and the export was boring in the best possible way. Everyone in the room was pleased.
+
+Then the pipeline met production, and production sent us a photocopy of a photocopy, rotated a few degrees, with the total field sitting under a scanner shadow. The model — the same model that had just charmed the room — read the total wrong, confidently, on every single page from that office.
+
+I've spent years inside document-processing pipelines: the kind that read scanned forms so a downstream system can act on them. This post is the part nobody demos — everything that sits between a model and a pipeline a business can actually run on. When LLMs showed up they rewrote the middle of that stack. None of what I'm about to say moved an inch.
+
+## The cheapest fix is at the scanner
+
+My first instinct, and I see it in every new engineer, was to fix bad input inside the code: denoise it, binarize it, deskew it, throw preprocessing at the problem until the model sees a clean page. Preprocessing has its place. But the single most valuable thing I ever added to those pipelines was not a transform — it was a **gate**: measure the page before the model touches it, and if the page is hopeless, send it back to the person holding the scanner, with a reason they can act on. "Page 3 is skewed — re-scan it." "This page is too faint — check the toner." Seconds of effort, at the moment the paper is still on the desk.
+
+The economics are brutal and one-sided. A bad page rejected at intake costs seconds. The same page passed downstream costs an afternoon of someone's time — and it surfaces as an error in a system that, from the operator's chair, is simply *wrong*. Rejecting is not the pipeline failing. Rejecting with a reason is the pipeline working.
+
+One subtlety took me embarrassingly long to learn: **prescribe per field, not per page.** Aggressive binarization that makes printed digits crisp can destroy a red stamp overlapping a signature, or the pencil correction someone made on top of a printed amount. Any preprocessing decision made "for the page" helps one field while quietly wrecking another. Measure per field first; only then decide what the page deserves.
+
+> A bad page rejected at intake costs seconds. The same page passed downstream costs an afternoon — and the person who pays never heard of your model.
+
+## Confidence is a number, not a promise
+
+Out of the box, a recognition model will hand you 0.94 for crisp print and 0.71 for cursive scrawl, and everything in between lands in a mush around 0.85. If you set one threshold for the whole document — and everyone does, at first — you have built a coin flip with extra steps.
+
+The way out is to stop treating confidence as a property of the page and start treating it as a **per-field decision**. Fields are not equal. An amount that's wrong by one digit can move real money; a misread word in a notes field costs someone an awkward search later. So amounts, dates, and identifiers get strict thresholds and everything else gets lenient ones, and below-threshold fields don't go to the export — they go to a **human review queue**, pre-filled with what the model guessed, waiting for a person to confirm or fix.
+
+That queue deserves a defense, because someone in every meeting will call it "not really automation". It's the opposite: the queue is where the pipeline gets honest. It tells you which fields actually carry the difficulty, and its traffic per field became the single best regression signal I ever had — when a model upgrade, or a new scanner model, or a new form version quietly made dates worse, the queue noticed weeks before any benchmark did.
+
+> "99% accurate" is a marketing sentence. "Amounts either clear their threshold or get a human" is an engineering sentence.
+
+## Parsers break before accuracy does
+
+The most instructive failure of my OCR career was an upgrade that made everything better. New model, better numbers on the benchmark, shipped with confidence — and within days, complaints from the export side. Nothing was less accurate; the new model just *wrote differently*. Dates that used to come out as one format now came out as another. Thousands separators appeared where none had been. Lines that used to merge one way merged another. Raw accuracy went up and the pipeline went down, because **the parser was married to the model, not to reality**.
+
+The fix was to demote the model from "source of truth" to "witness". The moment a value is extracted it gets canonicalized — one date format, one number format, one representation of nothing-found — and from there on, the export never sees a model again, only types. Every field the export touches gets a contract, and the contract gets a test:
+
+```text
+field      contract                            on violation
+─────────  ──────────────────────────────────  ─────────────────
+amount     digits, optional grouping,          route to review;
+           exactly two decimals                never "fix" a guess
+date       exactly one pinned format           route to review
+case_id    uppercase letters/digits/dash,      route to review
+           minimum length 6
+free_text  non-empty after trim                allow empty
+```
+
+Model upgrades then become what they should have been all along: an API migration with a test suite on it. You read the new model's opinions, you honor the interface, and the day a vendor changes behavior you get a red test instead of a phone call from a client.
+
+> An OCR pipeline doesn't break where accuracy drops. It breaks where format drifts.
+
+## Nobody has ground truth, so manufacture it
+
+The uncomfortable truth about document pipelines is that there is no answer key. Nobody hands you ten thousand labeled scans. So you measure with what you have, and what you have is more than it looks like:
+
+- **Double entry is free labeled data.** Where the business already keys the same data by hand — and in the systems I worked on, someone always did — the keyed values are ground truth. Comparing OCR output against existing keyed entries gives you a live accuracy measurement that updates itself, forever, at zero labeling cost.
+- **Audit samples, on a schedule.** A small random sample pulled every week and checked by a person. Tiny, boring, and the only thing that catches slow drift — the kind where nothing breaks on any Tuesday but the numbers have moved two points by spring.
+- **Complaints as a lagging indicator.** When a human corrects a field in review, that correction is a labeled example too. Log them, count them, group them by field.
+
+And then track it per field, never per document. "The pipeline is at 97%" is not a number anyone can act on. "Amounts drifted from 99.6 to 97.1 since the scanner change" is a work order. This is the same lesson my data-sync pipeline taught me a decade ago — the system has to feel its own pain, and tell you, before the client does. Accuracy without a measurement harness isn't engineering. It's a rumor.
+
+> If you can't say which fields got worse, you didn't upgrade a pipeline — you rolled dice and filed it as engineering.
+
+## Then LLMs happened
+
+Vision-language models rewrote the middle of the stack, and I'm not going to pretend otherwise. Layout analysis, handwriting, tables that no two humans fill in the same way — the sections that cost my teams weeks — a modern multimodal model simply does them. Handwriting went from hopeless to usable. Half of our preprocessing rationale evaporated overnight.
+
+So we swapped the model layer. And the scaffolding — every lesson above — stayed exactly where it was:
+
+- Pages still get a quality gate. An unreadable photo is still cheaper to re-scan than to investigate.
+- Confidence still gets mapped per field. A structured-output prompt is not a promise; a wrong answer from an LLM is rendered in the same confident typeface as a right one. If anything, calibration matters *more* now, because the errors are fluent.
+- The parse layer still canonicalizes and still honors contracts — a prompt is now part of that contract, pinned and tested like any other format commitment.
+- The review queue and the audit sample still tell us the truth. The queue didn't shrink to zero; it moved to different fields.
+
+This is the same conclusion my TDD post reached from a different direction: AI raised the floor and the throughput of the hard part, which makes the surrounding discipline worth *more*, not less. The model got easier to replace. That's precisely why the parts that don't change are the valuable ones.
+
+## If you're buying AI features
+
+Most AI demos are the two-week demo from the start of this post: clean data, straight lines, everyone pleased. The questions that separate an engineered pipeline from a demo are not about the model at all:
+
+1. What happens to an input the system can't read — where does it go, and who finds out?
+2. Which fields get a human, and how is that boundary decided?
+3. How do you know accuracy didn't move last month — measured how, on which fields?
+4. What breaks in my downstream when you swap or upgrade the model?
+
+Ask those four in your next AI project meeting. If the answers are concrete — gates, queues, contracts, audits — you're talking to someone who has run this in production. If the answers are about model choice and parameter counts, you're about to fund a demo.
+
+Documents go in, and money rides on what comes out — that's the work I like best. If that's your situation, my contact page is one click away.
